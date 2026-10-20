@@ -1,0 +1,63 @@
+import { useState } from "react";
+import { motion, useReducedMotion } from "motion/react";
+import { about, site } from "../data/site";
+import { Container, Dot, springIn } from "./primitives";
+import { Reveal } from "./Reveal";
+
+function Portrait() {
+  const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
+
+  return (
+    <div className="relative h-[420px] overflow-hidden rounded-[32px] border border-white/[0.07] bg-surface sm:h-[520px]">
+      <div aria-hidden="true" className="absolute inset-0 grid place-items-center">
+        <span className="text-[120px] leading-none font-bold tracking-[-0.06em] text-white/[0.06]">{site.initials}</span>
+      </div>
+      {status !== "error" && (
+        <img
+          src={site.portrait}
+          alt={`Portrait de ${site.name}`}
+          loading="lazy"
+          decoding="async"
+          onLoad={() => setStatus("loaded")}
+          onError={() => setStatus("error")}
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${status === "loaded" ? "opacity-100" : "opacity-0"}`}
+        />
+      )}
+    </div>
+  );
+}
+
+export function About() {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <section id="a-propos" className="py-[110px] md:py-[160px]">
+      <Container className="flex flex-wrap items-center gap-[72px]">
+        <Reveal className="min-w-0 flex-[1_1_380px]">
+          <Portrait />
+        </Reveal>
+        <Reveal className="min-w-0 flex-[1_1_440px]">
+          <h2 className="text-[clamp(44px,5.6vw,80px)] leading-[0.96] font-bold tracking-[-0.05em]">
+            {about.title}
+            <Dot />
+          </h2>
+          <p className="mt-7 text-[19px] leading-[1.45] text-muted sm:text-[21px]">{about.text}</p>
+          <ul className="mt-12 grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-x-6 gap-y-8">
+            {about.traits.map((trait, i) => (
+              <motion.li
+                key={trait.title}
+                className="border-t border-white/[0.12] pt-5"
+                initial={reduceMotion ? false : { opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0, transition: { ...springIn, delay: 0.2 + i * 0.09 } }}
+                viewport={{ once: true, amount: 0.5 }}
+              >
+                <p className="text-[17px] font-semibold">{trait.title}</p>
+                <p className="mt-1.5 text-[15px] leading-[1.45] text-muted">{trait.text}</p>
+              </motion.li>
+            ))}
+          </ul>
+        </Reveal>
+      </Container>
+    </section>
+  );
+}
