@@ -1,13 +1,11 @@
-import { useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion, type Variants } from "motion/react";
+import { useState } from "react";
+import { AnimatePresence, motion, type Variants } from "motion/react";
 import { contactSection, hasPhone, phoneHref, site } from "../data/site";
-import { Container, Dot, EASE, pressable, primaryButton } from "./primitives";
+import { Container, Dot, EASE, pressable, primaryButton, useReducedMotionSafe } from "./primitives";
 import { Reveal } from "./Reveal";
 
 type Status = "idle" | "sending" | "success" | "error";
 type FieldElement = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
-
-const endpoint = import.meta.env.VITE_FORMSPREE_ENDPOINT?.trim();
 
 const fieldBase =
   "mt-2 block w-full rounded-[12px] border bg-bg px-4 text-[16px] text-ink transition-[border-color] duration-150 placeholder:text-subtle focus:border-violet focus:outline-none";
@@ -55,8 +53,7 @@ function Field({ name, label, error, children }: FieldProps) {
 }
 
 function ContactForm() {
-  const reduceMotion = useReducedMotion();
-  const formRef = useRef<HTMLFormElement>(null);
+  const reduceMotion = useReducedMotionSafe();
   const [needs, setNeeds] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
@@ -92,11 +89,10 @@ function ContactForm() {
       invalid[0].focus();
       return;
     }
-    if (!endpoint) return;
 
     setStatus("sending");
     try {
-      const response = await fetch(endpoint, {
+      const response = await fetch(contactSection.endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify(Object.fromEntries(new FormData(form))),
@@ -120,15 +116,14 @@ function ContactForm() {
             className="py-10 text-center sm:py-16"
           >
             <p className="text-[32px] leading-[1.05] font-bold tracking-[-0.04em]">
-              Message envoyé
+              {contactSection.success.title}
               <Dot />
             </p>
-            <p className="mx-auto mt-4 max-w-[420px] text-[18px] leading-[1.45] text-muted">Merci, je vous réponds sous 24 h à l’adresse indiquée.</p>
+            <p className="mx-auto mt-4 max-w-[420px] text-[18px] leading-[1.45] text-muted">{contactSection.success.text}</p>
           </motion.div>
         ) : (
           <motion.form
             key="form"
-            ref={formRef}
             id="formulaire"
             noValidate
             onSubmit={onSubmit}
@@ -164,16 +159,16 @@ function ContactForm() {
 
             <div className="grid gap-6 sm:grid-cols-2">
               <Field name="nom" label="Votre nom *" error={errors.nom}>
-                {(props) => <input {...props} {...handlers} name="nom" required autoComplete="name" className={`${props.className} h-12`} />}
+                {(props) => <input {...props} {...handlers} name="nom" required maxLength={120} autoComplete="name" className={`${props.className} h-12`} />}
               </Field>
               <Field name="entreprise" label="Votre entreprise">
-                {(props) => <input {...props} name="entreprise" autoComplete="organization" className={`${props.className} h-12`} />}
+                {(props) => <input {...props} name="entreprise" maxLength={120} autoComplete="organization" className={`${props.className} h-12`} />}
               </Field>
               <Field name="email" label="Votre email *" error={errors.email}>
-                {(props) => <input {...props} {...handlers} name="email" type="email" required autoComplete="email" className={`${props.className} h-12`} />}
+                {(props) => <input {...props} {...handlers} name="email" type="email" required maxLength={180} autoComplete="email" className={`${props.className} h-12`} />}
               </Field>
               <Field name="telephone" label="Votre téléphone">
-                {(props) => <input {...props} name="telephone" type="tel" autoComplete="tel" className={`${props.className} h-12`} />}
+                {(props) => <input {...props} name="telephone" type="tel" maxLength={40} autoComplete="tel" className={`${props.className} h-12`} />}
               </Field>
             </div>
 
@@ -189,12 +184,17 @@ function ContactForm() {
             </Field>
 
             <Field name="message" label="Parlez-moi de votre projet *" error={errors.message}>
-              {(props) => <textarea {...props} {...handlers} name="message" required rows={5} className={`${props.className} py-3 leading-[1.5]`} />}
+              {(props) => <textarea {...props} {...handlers} name="message" required maxLength={5000} rows={5} className={`${props.className} py-3 leading-[1.5]`} />}
             </Field>
+
+            <div aria-hidden="true" className="absolute -left-[9999px] h-px w-px overflow-hidden">
+              <label htmlFor="champ-site">Ne pas remplir</label>
+              <input id="champ-site" name="site_web" tabIndex={-1} autoComplete="off" />
+            </div>
 
             {status === "error" && (
               <p role="alert" className="rounded-[12px] border border-[#FF8F8F]/40 px-4 py-3 text-[15px] leading-[1.45] text-[#FF9C9C]">
-                L’envoi n’a pas abouti. Réessayez, ou écrivez-moi directement à{" "}
+                {contactSection.error}{" "}
                 <a href={`mailto:${site.email}`} className="font-semibold text-ink underline underline-offset-4">
                   {site.email}
                 </a>
@@ -246,7 +246,7 @@ export function Contact() {
             </div>
           </Reveal>
         </div>
-        <div className="min-w-0 lg:col-span-7">
+        <div className="relative min-w-0 lg:col-span-7">
           <ContactForm />
         </div>
       </Container>

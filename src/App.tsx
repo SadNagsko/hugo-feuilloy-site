@@ -1,26 +1,25 @@
-import { About } from "./components/About";
-import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
-import { Hero } from "./components/Hero";
 import { Navbar } from "./components/Navbar";
-import { Offers } from "./components/Offers";
-import { Projects } from "./components/Projects";
-import { Statement } from "./components/Statement";
+import { legalNotice, privacyPolicy } from "./data/legal";
+import { site, type RoutePath } from "./data/site";
 import { useLenis } from "./hooks/useLenis";
+import { Home } from "./pages/Home";
+import { LegalPage } from "./pages/LegalPage";
 
-export default function App() {
+function Page({ path }: { path: RoutePath }) {
+  if (path === site.links.legal) return <LegalPage document={legalNotice} />;
+  if (path === site.links.privacy) return <LegalPage document={privacyPolicy} />;
+  return <Home />;
+}
+
+export default function App({ path }: { path: RoutePath }) {
   useLenis();
 
   return (
     <div id="top">
-      <Navbar />
+      <Navbar home={path === "/"} />
       <main>
-        <Hero />
-        <Statement />
-        <Projects />
-        <Offers />
-        <About />
-        <Contact />
+        <Page path={path} />
       </main>
       <Footer />
     </div>

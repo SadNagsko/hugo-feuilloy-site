@@ -1,11 +1,10 @@
-import { useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import { motion } from "motion/react";
 import { about, site } from "../data/site";
-import { Container, Dot, springIn } from "./primitives";
+import { Container, Dot, springIn, useImageStatus, useReducedMotionSafe } from "./primitives";
 import { Reveal } from "./Reveal";
 
 function Portrait() {
-  const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
+  const { status, imageProps } = useImageStatus();
 
   return (
     <div className="relative h-[420px] overflow-hidden rounded-[32px] border border-white/[0.07] bg-surface sm:h-[520px]">
@@ -18,8 +17,7 @@ function Portrait() {
           alt={`Portrait de ${site.name}`}
           loading="lazy"
           decoding="async"
-          onLoad={() => setStatus("loaded")}
-          onError={() => setStatus("error")}
+          {...imageProps}
           className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${status === "loaded" ? "opacity-100" : "opacity-0"}`}
         />
       )}
@@ -28,7 +26,7 @@ function Portrait() {
 }
 
 export function About() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
 
   return (
     <section id="a-propos" className="py-[110px] md:py-[160px]">

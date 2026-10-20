@@ -4,3 +4,6 @@ dist
 .env.local
 .env.*.local
 .DS_Store
+dist-ssr
+api/vendor
+api/.env

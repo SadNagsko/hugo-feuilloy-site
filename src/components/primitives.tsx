@@ -1,8 +1,19 @@
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useReducedMotion } from "motion/react";
+
 export const EASE = [0.16, 1, 0.3, 1] as const;
 
 export const palette = { ink: "#f4f2fa", subtle: "#6f6987" } as const;
 
 export const springIn = { type: "spring", bounce: 0, duration: 0.8 } as const;
+
+const noopSubscribe = () => () => {};
+
+export function useReducedMotionSafe() {
+  const reduceMotion = useReducedMotion();
+  const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  return hydrated && Boolean(reduceMotion);
+}
 
 export const pressable = "transition-transform duration-[120ms] active:scale-[0.97]";
 
@@ -42,4 +53,21 @@ export function Check({ className = "" }: { className?: string }) {
       <path d="m3.5 8.5 3 3 6-7" />
     </svg>
   );
+}
+
+export type ImageStatus = "loading" | "loaded" | "error";
+
+export function useImageStatus() {
+  const ref = useRef<HTMLImageElement>(null);
+  const [status, setStatus] = useState<ImageStatus>("loading");
+
+  useEffect(() => {
+    const image = ref.current;
+    if (image?.complete) setStatus(image.naturalWidth > 0 ? "loaded" : "error");
+  }, []);
+
+  return {
+    status,
+    imageProps: { ref, onLoad: () => setStatus("loaded"), onError: () => setStatus("error") },
+  };
 }

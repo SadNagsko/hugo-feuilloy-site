@@ -1,7 +1,8 @@
-import { maintenance } from "./offers";
+import { maintenance } from "./offers.ts";
 
 export const site = {
   name: "Hugo Feuilloy",
+  url: "https://hugofeuilloy.fr",
   legalName: "Hugo Feuilloy EI",
   initials: "HF",
   email: "bonjour@hugofeuilloy.fr",
@@ -18,6 +19,27 @@ export const site = {
     privacy: "/confidentialite",
   },
 };
+
+export const routes = [
+  { path: "/", title: site.seo.title, description: site.seo.description },
+  {
+    path: site.links.legal,
+    title: "Mentions légales · Hugo Feuilloy",
+    description: "Mentions légales du site de Hugo Feuilloy, développeur web freelance basé près de Blois.",
+  },
+  {
+    path: site.links.privacy,
+    title: "Politique de confidentialité · Hugo Feuilloy",
+    description: "Quelles données sont collectées sur le site de Hugo Feuilloy, pourquoi, combien de temps, et comment exercer vos droits.",
+  },
+] as const;
+
+export type RoutePath = (typeof routes)[number]["path"];
+
+export function resolveRoute(pathname: string) {
+  const normalized = pathname.replace(/\/+$/, "") || "/";
+  return routes.find((route) => route.path === normalized) ?? routes[0];
+}
 
 export const hasPhone = !site.phone.startsWith("TODO");
 export const phoneHref = `tel:${site.phone.replace(/[^\d+]/g, "").replace(/^0/, "+33")}`;
@@ -70,4 +92,7 @@ export const contactSection = {
   text: "Racontez-moi votre projet, même s’il n’est pas encore totalement défini. Réponse sous 24 h, sans jargon et sans engagement.",
   needs: ["Site vitrine", "Boutique en ligne", "Réservation", "Espace client", "Outil sur mesure", "Maintenance"],
   budgets: ["Moins de 2 000 €", "2 000 à 5 000 €", "Plus de 5 000 €"],
+  endpoint: "/api/contact.php",
+  success: { title: "Message envoyé", text: "Merci, je vous réponds sous 24 h à l’adresse indiquée." },
+  error: "L’envoi n’a pas abouti. Réessayez, ou écrivez-moi directement à",
 };

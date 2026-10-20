@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { nav, site } from "../data/site";
-import { pressable } from "./primitives";
+import { pressable, useReducedMotionSafe } from "./primitives";
 
-export function Navbar() {
+export function Navbar({ home }: { home: boolean }) {
+  const link = (href: string) => (home ? href : `/${href}`);
   const [open, setOpen] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
   const barRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ export function Navbar() {
       <div ref={barRef} className="relative mx-auto max-w-[1200px]">
         <header className={`rounded-[18px] py-2 pr-2 pl-4 ${glass}`}>
           <nav aria-label="Navigation principale" className="flex items-center justify-between gap-4">
-            <a href="#top" className={`flex min-h-11 items-center gap-2.5 rounded-[12px] ${pressable}`}>
+            <a href={home ? "#top" : "/"} className={`flex min-h-11 items-center gap-2.5 rounded-[12px] ${pressable}`}>
               <span aria-hidden="true" className="grid size-8 place-items-center rounded-[9px] bg-violet-strong text-[13px] font-bold text-white">
                 {site.initials}
               </span>
@@ -53,14 +54,14 @@ export function Navbar() {
               <ul className="hidden items-center gap-[30px] md:flex">
                 {nav.map(({ label, href }) => (
                   <li key={href}>
-                    <a href={href} className={`inline-flex min-h-11 items-center text-[14px] font-medium text-muted transition-[color,transform] hover:text-ink ${pressable}`}>
+                    <a href={link(href)} className={`inline-flex min-h-11 items-center text-[14px] font-medium text-muted transition-[color,transform] hover:text-ink ${pressable}`}>
                       {label}
                     </a>
                   </li>
                 ))}
               </ul>
               <a
-                href="#contact"
+                href={link("#contact")}
                 className={`inline-flex h-10 min-h-10 items-center rounded-[12px] bg-violet-strong px-[18px] text-[14px] font-semibold whitespace-nowrap text-white hover:bg-violet ${pressable}`}
               >
                 Devis gratuit
@@ -93,7 +94,7 @@ export function Navbar() {
                 {nav.map(({ label, href }) => (
                   <li key={href}>
                     <a
-                      href={href}
+                      href={link(href)}
                       onClick={() => setOpen(false)}
                       className={`flex min-h-12 items-center rounded-[12px] px-3 text-[16px] font-medium text-ink hover:bg-white/[0.05] ${pressable}`}
                     >

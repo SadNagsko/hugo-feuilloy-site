@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import {
   maintenance,
   maintenanceFeatures,
@@ -10,11 +10,11 @@ import {
   type MaintenancePlan,
   type Offer,
 } from "../data/offers";
-import { Check, Chevron, Container, Dot, pressable, springIn } from "./primitives";
+import { Check, Chevron, Container, Dot, pressable, springIn, useReducedMotionSafe } from "./primitives";
 import { Reveal } from "./Reveal";
 
 function OfferCard({ offer, index }: { offer: Offer; index: number }) {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
   const motionProps = reduceMotion
     ? {}
     : {
@@ -157,7 +157,7 @@ function ComparisonCards() {
 
 export function Offers() {
   const [open, setOpen] = useState(false);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
   const panelTransition = reduceMotion ? { duration: 0 } : { type: "spring" as const, bounce: 0, duration: 0.5 };
 
   return (

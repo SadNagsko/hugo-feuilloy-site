@@ -1,7 +1,7 @@
 import { Fragment, useRef, useState } from "react";
-import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { motion, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react";
 import { statement } from "../data/site";
-import { Dot, palette } from "./primitives";
+import { Dot, palette, useReducedMotionSafe } from "./primitives";
 import { Reveal } from "./Reveal";
 
 type Sentence = (typeof statement.sentences)[number];
@@ -96,6 +96,6 @@ function StaticStatement() {
 }
 
 export function Statement() {
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
   return reduceMotion ? <StaticStatement /> : <ScrollStatement />;
 }

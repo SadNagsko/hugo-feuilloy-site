@@ -1,0 +1,13 @@
+{
+    "name": "hugofeuilloy/contact-api",
+    "description": "Envoi du formulaire de contact via le SMTP Gmail",
+    "type": "project",
+    "require": {
+        "php": ">=8.2",
+        "ext-mbstring": "*",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "config": {
+        "optimize-autoloader": true
+    }
+}

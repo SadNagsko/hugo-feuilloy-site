@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { hero, primaryCta } from "../data/site";
-import { Chevron, Container, Dot, EASE, pressable, primaryButton } from "./primitives";
+import { Chevron, Container, Dot, EASE, pressable, primaryButton, useReducedMotionSafe } from "./primitives";
 
 const ENTRANCE_DELAYS = [0.08, 0.2, 0.34, 0.52];
 const LINE_STAGGER = 0.12;
@@ -28,7 +28,7 @@ function useRotatingIndex(length: number, intervalMs: number, enabled: boolean) 
 }
 
 export function Hero() {
-  const reduceMotion = useReducedMotion() ?? false;
+  const reduceMotion = useReducedMotionSafe();
   const [entered, setEntered] = useState(false);
   const index = useRotatingIndex(hero.words.length, hero.intervalMs, !reduceMotion && entered);
   const word = reduceMotion ? hero.words[hero.words.length - 1] : hero.words[index];

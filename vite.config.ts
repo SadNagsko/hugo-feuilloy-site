@@ -1,18 +1,20 @@
 import { defineConfig, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { site } from "./src/data/site";
+import { resolveRoute, site } from "./src/data/site.ts";
+import { applyPageMeta } from "./scripts/page-meta.ts";
 
-const escapeHtml = (value: string) => value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-
-function siteMeta(): Plugin {
+function devPageMeta(): Plugin {
   return {
-    name: "site-meta",
-    transformIndexHtml: (html) =>
-      html.replace("%SITE_TITLE%", escapeHtml(site.seo.title)).replace("%SITE_DESCRIPTION%", escapeHtml(site.seo.description)),
+    name: "dev-page-meta",
+    apply: "serve",
+    transformIndexHtml: (html, context) => {
+      const route = resolveRoute(new URL(context.originalUrl ?? "/", site.url).pathname);
+      return applyPageMeta(html, { title: route.title, description: route.description, url: `${site.url}${route.path === "/" ? "/" : route.path}` });
+    },
   };
 }
 
 export default defineConfig({
-  plugins: [react(), tailwindcss(), siteMeta()],
+  plugins: [react(), tailwindcss(), devPageMeta()],
 });

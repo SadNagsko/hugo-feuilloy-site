@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { projects, projectsIntro, type Project } from "../data/projects";
-import { ArrowUpRight, Container, Dot } from "./primitives";
+import { ArrowUpRight, Container, Dot, useImageStatus, useReducedMotionSafe } from "./primitives";
 import { Reveal } from "./Reveal";
 
 type ShotProps = {
@@ -12,7 +12,7 @@ type ShotProps = {
 };
 
 function Shot({ src, alt, colors, variant }: ShotProps) {
-  const [status, setStatus] = useState<"loading" | "loaded" | "error">("loading");
+  const { status, imageProps } = useImageStatus();
   const [base, accent, soft] = colors;
 
   return (
@@ -38,8 +38,7 @@ function Shot({ src, alt, colors, variant }: ShotProps) {
           alt={alt}
           loading="lazy"
           decoding="async"
-          onLoad={() => setStatus("loaded")}
-          onError={() => setStatus("error")}
+          {...imageProps}
           className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-500 ${status === "loaded" ? "opacity-100" : "opacity-0"}`}
         />
       )}
@@ -51,7 +50,7 @@ const hoverSpring = { type: "spring", bounce: 0, duration: 0.45 } as const;
 
 function ProjectCard({ project }: { project: Project }) {
   const ref = useRef<HTMLDivElement>(null);
-  const reduceMotion = useReducedMotion();
+  const reduceMotion = useReducedMotionSafe();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "start 0.55"] });
   const scale = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
   const opacity = useTransform(scrollYProgress, [0, 1], [0.4, 1]);
