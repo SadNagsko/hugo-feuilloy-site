@@ -7,3 +7,4 @@ dist
 dist-ssr
 api/vendor
 api/.env
+*.patch
