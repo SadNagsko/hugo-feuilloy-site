@@ -69,25 +69,6 @@ function Plans() {
   return <div className="rounded-[22px] border border-white/[0.07] bg-surface px-4 pb-4 sm:px-8 max-md:px-0 max-md:pb-0 max-md:border-0 max-md:bg-transparent">{isMobile ? <ComparisonCards /> : <ComparisonTable />}</div>;
 }
 
-function Shots({ slug, name }: { slug: string; name: string }) {
-  return (
-    <div className="relative mt-2 pb-10 max-md:pb-0">
-      <img
-        src={`/projets/${slug}-desktop.webp`}
-        alt={`Page d’accueil du site ${name}`}
-        width={1600}
-        height={913}
-        loading="lazy"
-        decoding="async"
-        className="w-[88%] rounded-2xl border border-white/[0.07] max-md:w-full max-md:rounded-xl"
-      />
-      <div className="absolute right-0 bottom-0 w-[24%] overflow-hidden rounded-[22px] border-[5px] border-[#0A0A0C] bg-[#0A0A0C] shadow-[0_24px_50px_rgba(0,0,0,0.4)] max-md:static max-md:mx-auto max-md:mt-4 max-md:w-[48%]">
-        <img src={`/projets/${slug}-mobile.webp`} alt={`Version mobile du site ${name}`} width={480} height={1047} loading="lazy" decoding="async" className="block w-full rounded-[17px]" />
-      </div>
-    </div>
-  );
-}
-
 function BlockView({ block }: { block: Block }) {
   switch (block.type) {
     case "p":
@@ -169,8 +150,6 @@ function BlockView({ block }: { block: Block }) {
       );
     case "plans":
       return <Plans />;
-    case "shots":
-      return <Shots slug={block.slug} name={block.name} />;
   }
 }
 
@@ -230,7 +209,7 @@ function FinalCta({ title, text }: { title: string; text: string }) {
 
 type LayoutProps = {
   page: ContentPage;
-  /** Sous le titre : date d'un article, lien vers le site d'une étude de cas, bouton d'action… */
+  /** Sous le titre : date d'un article, bouton d'action… */
   meta?: React.ReactNode;
   children?: React.ReactNode;
 };

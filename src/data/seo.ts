@@ -147,7 +147,7 @@ function pageGraph(page: ContentPage) {
 
 const jsonLd = (data: object) => `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`;
 
-/** Données structurées d'une page de contenu (services, page locale, étude de cas, article). */
+/** Données structurées d'une page de contenu (services, page locale, article). */
 export function contentStructuredData(path: string) {
   const page = findContentPage(path);
   return page ? pageGraph(page) : undefined;

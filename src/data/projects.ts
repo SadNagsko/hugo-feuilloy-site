@@ -15,7 +15,7 @@ export type ClientProject = {
   label: string;
   description: string;
   linkLabel: string;
-  /** Lien de la carte : page interne (étude de cas) ou site externe. */
+  /** Lien de la carte : site du client (external) ou page interne. */
   url?: string;
   external?: boolean;
   reversed?: boolean;
@@ -49,8 +49,9 @@ export const projects: Project[] = [
     name: "Les Belles Demois’Ailes",
     label: "E-commerce · Contres",
     description: "Une miellerie artisanale qui vend désormais sa production en direct, sans intermédiaire.",
-    linkLabel: "Voir l’étude de cas",
-    url: "/realisations/les-belles-demois-ailes",
+    linkLabel: "Voir le site",
+    url: "https://lesbellesdemoisailes.fr/",
+    external: true,
     reversed: true,
     theme: {
       background: "#F7EEDB",

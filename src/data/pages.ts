@@ -1,6 +1,6 @@
 import { maintenance, maintenanceFeatures, maintenancePlans, offers, paymentTerms, type Offer, type PlanId } from "./offers.ts";
 
-// Pages de contenu (services, page locale, étude de cas, article), pré-rendues comme l'accueil.
+// Pages de contenu (services, page locale, article), pré-rendues comme l'accueil.
 // Liens internes dans le texte : [libellé](/chemin). Toute info manquante est marquée TODO_HUGO.
 
 export type Block =
@@ -11,8 +11,7 @@ export type Block =
   | { type: "faq"; items: { question: string; answer: string }[] }
   | { type: "todo"; text: string }
   | { type: "offer"; offer: Offer }
-  | { type: "plans" }
-  | { type: "shots"; slug: string; name: string };
+  | { type: "plans" };
 
 export type Section = { title: string; blocks: Block[] };
 export type PageLink = { label: string; href: string; text: string };
@@ -33,16 +32,14 @@ type BasePage = {
 
 export type ServicePageData = BasePage & { kind: "service"; service: { name: string; type: string; offers: Offer[] | "maintenance" } };
 export type CityPageData = BasePage & { kind: "city" };
-export type CaseStudyPageData = BasePage & { kind: "case"; client: string; siteUrl: string; siteLabel: string };
 export type ArticlePageData = BasePage & { kind: "article"; published: string; publishedLabel: string };
-export type ContentPage = ServicePageData | CityPageData | CaseStudyPageData | ArticlePageData;
+export type ContentPage = ServicePageData | CityPageData | ArticlePageData;
 
 export const paths = {
   vitrine: "/creation-site-vitrine",
   boutique: "/creation-boutique-en-ligne",
   maintenance: "/maintenance-site-web",
   blois: "/developpeur-web-blois",
-  caseStudy: "/realisations/les-belles-demois-ailes",
   priceArticle: "/blog/prix-site-vitrine",
 } as const;
 
@@ -221,7 +218,7 @@ const boutiquePage: ServicePageData = {
         },
         {
           type: "p",
-          text: `C’est le choix qu’a fait [Les Belles Demois’Ailes](${paths.caseStudy}), une miellerie artisanale de Contres qui vend désormais sa production en direct, sans intermédiaire.`,
+          text: "C’est le choix qu’a fait Les Belles Demois’Ailes, une miellerie artisanale de Contres qui vend désormais sa production en direct, sans intermédiaire.",
         },
       ],
     },
@@ -488,7 +485,7 @@ const bloisPage: CityPageData = {
       blocks: [
         {
           type: "p",
-          text: `Les Belles Demois’Ailes est une miellerie artisanale de Contres. Son site lui permet de vendre sa production en direct, sans intermédiaire. J’ai raconté le projet dans [l’étude de cas Les Belles Demois’Ailes](${paths.caseStudy}).`,
+          text: "Les Belles Demois’Ailes est une miellerie artisanale de Contres. Son site lui permet de vendre sa production en direct, sans intermédiaire. Vous le trouverez avec mes autres projets dans les [réalisations](/#realisations).",
         },
       ],
     },
@@ -518,45 +515,6 @@ const bloisPage: CityPageData = {
   ],
   related: [serviceLinks.vitrine, serviceLinks.boutique, serviceLinks.maintenance],
   cta: { title: "Un projet dans le Loir-et-Cher ?", text: "Parlons-en à Blois ou en visio. Réponse sous 24 h, sans jargon et sans engagement." },
-};
-
-const caseStudyPage: CaseStudyPageData = {
-  kind: "case",
-  path: paths.caseStudy,
-  title: "Les Belles Demois’Ailes, étude de cas · Hugo Feuilloy",
-  description: "Étude de cas : la boutique en ligne des Belles Demois’Ailes, miellerie artisanale de Contres qui vend désormais sa production en direct.",
-  h1: "Les Belles Demois’Ailes : la boutique en ligne d’une miellerie",
-  breadcrumb: "Les Belles Demois’Ailes",
-  intro: "Une miellerie artisanale de Contres, dans le Loir-et-Cher, qui vend désormais sa production en direct, sans intermédiaire.",
-  client: "Les Belles Demois’Ailes",
-  siteUrl: "https://lesbellesdemoisailes.fr/",
-  siteLabel: "Voir le site",
-  sections: [
-    {
-      title: "Le client",
-      blocks: [
-        {
-          type: "p",
-          text: "Les Belles Demois’Ailes est une miellerie artisanale installée à Contres. Son site présente deux univers : le miel et les produits du terroir d’un côté, le travail de la cire et des fleurs de l’autre.",
-        },
-        { type: "shots", slug: "les-belles-demois-ailes", name: "Les Belles Demois’Ailes" },
-      ],
-    },
-    { title: "Le besoin", blocks: [{ type: "todo", text: "TODO_HUGO : décrire la situation de départ et ce que la miellerie attendait du site." }] },
-    {
-      title: "Ce que j’ai fait",
-      blocks: [{ type: "todo", text: "TODO_HUGO : décrire le travail réalisé (conception, boutique, retrait, formation…) et les choix importants." }],
-    },
-    {
-      title: "Le résultat",
-      blocks: [
-        { type: "p", text: "La miellerie vend aujourd’hui sa production en direct, depuis son propre site, sans passer par un intermédiaire." },
-        { type: "todo", text: "TODO_HUGO : résultats concrets et, si le client est d’accord, son témoignage." },
-      ],
-    },
-  ],
-  related: [serviceLinks.boutique, serviceLinks.blois],
-  cta: { title: "Un projet similaire ?", text: "Vous vendez vos produits et voulez le faire en ligne ? Décrivez votre projet, je vous réponds sous 24 h." },
 };
 
 const priceArticle: ArticlePageData = {
@@ -663,7 +621,7 @@ const priceArticle: ArticlePageData = {
   cta: { title: "Un chiffre précis pour votre site ?", text: "Décrivez votre activité et ce que vous attendez du site. Réponse sous 24 h, sans engagement." },
 };
 
-export const contentPages: ContentPage[] = [vitrinePage, boutiquePage, maintenancePage, bloisPage, caseStudyPage, priceArticle];
+export const contentPages: ContentPage[] = [vitrinePage, boutiquePage, maintenancePage, bloisPage, priceArticle];
 
 export function findContentPage(path: string) {
   return contentPages.find((page) => page.path === path);
