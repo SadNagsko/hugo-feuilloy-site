@@ -1,7 +1,7 @@
 import { Fragment, useRef, useState } from "react";
-import { motion, useMotionValueEvent, useScroll, useTransform, type MotionValue } from "motion/react";
+import { motion, useMotionValueEvent, useScroll, useTransform, type MotionValue, type Variants } from "motion/react";
 import { statement } from "../data/site";
-import { Dot, palette, useReducedMotionSafe } from "./primitives";
+import { Dot, palette, useIsMobile, useReducedMotionSafe } from "./primitives";
 import { Reveal } from "./Reveal";
 
 type Sentence = (typeof statement.sentences)[number];
@@ -28,6 +28,56 @@ function ScrollSentence({ sentence, index, progress }: { sentence: Sentence; ind
         </Fragment>
       ))}
     </>
+  );
+}
+
+const sentenceWord: Variants = {
+  dim: { opacity: 0.15, y: 8, color: palette.subtle },
+  lit: { opacity: 1, y: 0, color: palette.ink, transition: { type: "spring", bounce: 0, duration: 0.8 } },
+};
+
+function InViewSentence({ sentence }: { sentence: Sentence }) {
+  const words = sentence.text.split(" ");
+  return (
+    <motion.span initial="dim" whileInView="lit" viewport={{ once: true, amount: 0.8 }}>
+      {words.map((word, i) => (
+        <Fragment key={i}>
+          <motion.span className="inline-block" variants={sentenceWord}>
+            {word}
+            {sentence.dot && i === words.length - 1 && <Dot />}
+          </motion.span>{" "}
+        </Fragment>
+      ))}
+    </motion.span>
+  );
+}
+
+function MobileStatement() {
+  return (
+    <section aria-label="Méthode" className="border-t border-white/[0.07] bg-bg-deep py-24">
+      <div className="px-5">
+        <p className="text-[32px] leading-[1.15] font-semibold tracking-[-0.035em]">
+          {statement.sentences.map((sentence) => (
+            <InViewSentence key={sentence.text} sentence={sentence} />
+          ))}
+        </p>
+        <ol className="mt-10 flex flex-col gap-6">
+          {statement.steps.map((step, i) => (
+            <motion.li
+              key={step.label}
+              className="border-t border-white/[0.12] pt-5"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ type: "spring", bounce: 0, duration: 0.6, delay: i * 0.1 }}
+            >
+              <p className="text-[14px] font-medium text-violet-soft">{step.label}</p>
+              <p className="mt-2 text-[19px] leading-[1.25] font-semibold tracking-[-0.02em]">{step.text}</p>
+            </motion.li>
+          ))}
+        </ol>
+      </div>
+    </section>
   );
 }
 
@@ -60,7 +110,7 @@ function ScrollStatement() {
   return (
     <section ref={ref} aria-label="Méthode" className="relative h-[180vh] border-t border-white/[0.07] bg-bg-deep md:h-[240vh]">
       <div className="sticky top-0 flex h-svh items-center pt-[88px] pb-8">
-        <div className="mx-auto w-full max-w-[1100px] px-5 sm:px-8">
+        <div className="mx-auto w-full max-w-[1100px] px-5 md:px-8">
           <p className={paragraph}>
             {statement.sentences.map((sentence, i) => (
               <ScrollSentence key={sentence.text} sentence={sentence} index={i} progress={scrollYProgress} />
@@ -77,8 +127,8 @@ function ScrollStatement() {
 
 function StaticStatement() {
   return (
-    <section aria-label="Méthode" className="border-t border-white/[0.07] bg-bg-deep py-[110px] md:py-[170px]">
-      <div className="mx-auto max-w-[1100px] px-5 sm:px-8">
+    <section aria-label="Méthode" className="border-t border-white/[0.07] bg-bg-deep py-24 md:py-[170px]">
+      <div className="mx-auto max-w-[1100px] px-5 md:px-8">
         <p className={paragraph}>
           {statement.sentences.map((sentence) => (
             <Fragment key={sentence.text}>
@@ -87,7 +137,7 @@ function StaticStatement() {
             </Fragment>
           ))}
         </p>
-        <Reveal className="mt-20 md:mt-28">
+        <Reveal className="mt-10 md:mt-28">
           <Steps visible animated={false} />
         </Reveal>
       </div>
@@ -97,5 +147,7 @@ function StaticStatement() {
 
 export function Statement() {
   const reduceMotion = useReducedMotionSafe();
-  return reduceMotion ? <StaticStatement /> : <ScrollStatement />;
+  const isMobile = useIsMobile();
+  if (reduceMotion) return <StaticStatement />;
+  return isMobile ? <MobileStatement /> : <ScrollStatement />;
 }

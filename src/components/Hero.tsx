@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { hero, primaryCta } from "../data/site";
-import { Chevron, Container, Dot, EASE, pressable, primaryButton, useReducedMotionSafe } from "./primitives";
+import { Chevron, Container, Dot, EASE, mobileText, pressable, primaryButton, useReducedMotionSafe } from "./primitives";
 
 const ENTRANCE_DELAYS = [0.08, 0.2, 0.34, 0.52];
 const LINE_STAGGER = 0.12;
@@ -48,8 +48,8 @@ export function Hero() {
   const allWords = `${hero.words.slice(0, -1).join(", ")} et ${hero.words[hero.words.length - 1]}`;
 
   return (
-    <section className="flex min-h-[calc(100svh-70px)] flex-col">
-      <Container className="flex flex-1 flex-col items-center justify-center gap-[34px] py-20 text-center">
+    <section className="flex min-h-[calc(100svh-70px)] flex-col max-md:min-h-[calc(100svh-72px)]">
+      <Container className="flex flex-1 flex-col items-center justify-center gap-[34px] py-20 text-center max-md:items-start max-md:text-left">
         <motion.p {...enter(0)} className="text-[15px] text-muted">
           {hero.eyebrow}
         </motion.p>
@@ -84,12 +84,13 @@ export function Hero() {
           </span>
         </h1>
 
-        <motion.p {...enter(2)} className="max-w-[600px] text-[19px] leading-[1.45] text-muted sm:text-[21px]">
-          {hero.text}
+        <motion.p {...enter(2)} className={`max-w-[600px] text-[19px] leading-[1.45] text-muted sm:text-[21px] ${mobileText}`}>
+          <span className="max-md:hidden">{hero.text}</span>
+          <span className="md:hidden">{hero.textShort}</span>
         </motion.p>
 
-        <motion.div {...enter(3)} className="flex flex-col items-center gap-x-8 gap-y-4 sm:flex-row">
-          <a href={primaryCta.href} className={primaryButton}>
+        <motion.div {...enter(3)} className="flex flex-col items-center gap-x-8 gap-y-4 sm:flex-row max-md:w-full max-md:flex-col max-md:items-start">
+          <a href={primaryCta.href} className={`${primaryButton} max-md:w-full`}>
             {primaryCta.label}
           </a>
           <a href={hero.secondary.href} className={`inline-flex min-h-11 items-center gap-1 text-[17px] font-medium text-violet-soft hover:text-ink ${pressable}`}>
@@ -101,9 +102,17 @@ export function Hero() {
 
       <div className="border-t border-white/[0.07]">
         <Container>
-          <ul className="grid grid-cols-2 gap-x-6 gap-y-3 py-6 text-[14px] text-muted md:grid-cols-4 md:text-center">
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-3 py-6 text-[14px] text-muted max-md:hidden md:grid-cols-4 md:text-center">
             {hero.proof.map((item) => (
               <li key={item}>{item}</li>
+            ))}
+          </ul>
+          <ul className="flex flex-col gap-2.5 py-6 text-[14px] text-muted md:hidden">
+            {hero.proofShort.map((item) => (
+              <li key={item} className="flex items-center gap-2.5">
+                <span aria-hidden="true" className="size-1 shrink-0 rounded-full bg-violet" />
+                {item}
+              </li>
             ))}
           </ul>
         </Container>

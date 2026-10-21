@@ -15,6 +15,19 @@ export function useReducedMotionSafe() {
   return hydrated && Boolean(reduceMotion);
 }
 
+const mobileQuery = "(max-width: 767.98px)";
+const subscribeMobile = (onChange: () => void) => {
+  const media = window.matchMedia(mobileQuery);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+};
+
+export function useIsMobile() {
+  return useSyncExternalStore(subscribeMobile, () => window.matchMedia(mobileQuery).matches, () => false);
+}
+
+export const mobileText = "max-md:text-[17px] max-md:leading-[1.5]";
+
 export const pressable = "transition-transform duration-[120ms] active:scale-[0.97]";
 
 export const primaryButton = `inline-flex h-[54px] items-center justify-center rounded-[12px] bg-violet-strong px-7 text-[17px] font-semibold text-white hover:bg-violet ${pressable}`;
@@ -36,7 +49,7 @@ export function Chevron({ className = "" }: { className?: string }) {
 }
 
 export function Container({ className = "", children }: { className?: string; children: React.ReactNode }) {
-  return <div className={`mx-auto w-full max-w-[1200px] px-5 sm:px-8 ${className}`}>{children}</div>;
+  return <div className={`mx-auto w-full max-w-[1200px] px-5 md:px-8 ${className}`}>{children}</div>;
 }
 
 export function ArrowUpRight({ className = "" }: { className?: string }) {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   maintenance,
@@ -10,22 +10,28 @@ import {
   type MaintenancePlan,
   type Offer,
 } from "../data/offers";
-import { Check, Chevron, Container, Dot, pressable, springIn, useReducedMotionSafe } from "./primitives";
+import { Check, Chevron, Container, Dot, mobileText, pressable, springIn, useIsMobile, useReducedMotionSafe } from "./primitives";
 import { Reveal } from "./Reveal";
 
-function OfferCard({ offer, index }: { offer: Offer; index: number }) {
+type OfferCardProps = { offer: Offer; index: number; mobile: boolean; cardRef: (element: HTMLElement | null) => void };
+
+function OfferCard({ offer, index, mobile, cardRef }: OfferCardProps) {
   const reduceMotion = useReducedMotionSafe();
-  const motionProps = {
-    initial: { opacity: 0, y: 40 },
-    whileInView: { opacity: 1, y: 0, transition: { ...springIn, delay: index * 0.09 } },
-    whileHover: reduceMotion ? undefined : { y: -4, transition: { type: "spring" as const, bounce: 0, duration: 0.35 } },
-    viewport: { once: true, amount: 0.3 },
-  };
+  const reveal = { opacity: 1, y: 0, transition: { ...springIn, delay: index * 0.09 } };
+  const motionProps = mobile
+    ? { initial: { opacity: 0, y: 40 }, animate: reveal }
+    : {
+        initial: { opacity: 0, y: 40 },
+        whileInView: reveal,
+        whileHover: reduceMotion ? undefined : { y: -4, transition: { type: "spring" as const, bounce: 0, duration: 0.35 } },
+        viewport: { once: true, amount: 0.3 },
+      };
 
   return (
     <motion.article
+      ref={cardRef}
       {...motionProps}
-      className={`flex flex-col rounded-[28px] border bg-surface p-8 sm:p-10 ${offer.badge ? "border-violet/40" : "border-white/[0.07]"}`}
+      className={`flex flex-col rounded-[28px] border bg-surface p-8 sm:p-10 max-md:w-[85%] max-md:shrink-0 max-md:snap-center max-md:p-7 ${offer.badge ? "border-violet/40" : "border-white/[0.07]"}`}
     >
       <div className="flex min-h-7 items-center justify-between gap-3">
         <h3 className="text-[17px] font-semibold text-violet-soft">{offer.name}</h3>
@@ -35,7 +41,7 @@ function OfferCard({ offer, index }: { offer: Offer; index: number }) {
         {offer.from && <span className="text-[17px] text-muted">dès</span>}
         <span className="text-[46px] leading-none font-bold tracking-[-0.045em]">{offer.price}</span>
       </p>
-      <p className="mt-5 text-[18px] leading-[1.45] text-muted">{offer.text}</p>
+      <p className={`mt-5 text-[18px] leading-[1.45] text-muted ${mobileText}`}>{offer.text}</p>
       <ul className="mt-8">
         {offer.points.map((point) => (
           <li key={point} className="border-t border-white/[0.07] py-3.5 text-[16px]">
@@ -77,7 +83,7 @@ function ComparisonTable() {
   const highlight = (plan: MaintenancePlan) => (plan.badge ? "border-x border-violet/30 bg-violet/[0.06]" : "");
 
   return (
-    <table className="hidden w-full border-collapse text-[15px] md:table">
+    <table className="hidden w-full border-separate border-spacing-0 text-[15px] md:table">
       <caption className="sr-only">Comparatif des formules de suivi</caption>
       <thead>
         <tr>
@@ -153,25 +159,85 @@ function ComparisonCards() {
   );
 }
 
+function useActiveSlide(count: number) {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const slides = useRef<(HTMLElement | null)[]>([]);
+  const [active, setActive] = useState(0);
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    const track = trackRef.current;
+    if (!isMobile || !track) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(slides.current.indexOf(entry.target as HTMLElement));
+        }
+      },
+      { root: track, threshold: 0.6 },
+    );
+    slides.current.slice(0, count).forEach((slide) => slide && observer.observe(slide));
+    return () => observer.disconnect();
+  }, [isMobile, count]);
+
+  const goTo = (index: number, smooth: boolean) => {
+    const track = trackRef.current;
+    const slide = slides.current[index];
+    if (!track || !slide) return;
+    track.scrollTo({ left: slide.offsetLeft - (track.clientWidth - slide.offsetWidth) / 2, behavior: smooth ? "smooth" : "auto" });
+  };
+
+  return { trackRef, slides, active, goTo, isMobile };
+}
+
 export function Offers() {
   const [open, setOpen] = useState(false);
   const reduceMotion = useReducedMotionSafe();
+  const carousel = useActiveSlide(offers.length);
   const panelTransition = reduceMotion ? { duration: 0 } : { type: "spring" as const, bounce: 0, duration: 0.5 };
 
   return (
-    <section id="offres" className="border-y border-white/[0.07] bg-bg-deep py-[110px] md:py-[150px]">
+    <section id="offres" className="border-y border-white/[0.07] bg-bg-deep py-24 md:py-[150px]">
       <Container>
-        <Reveal className="mx-auto max-w-[680px] text-center">
+        <Reveal className="mx-auto max-w-[680px] text-center max-md:mx-0 max-md:text-left">
           <h2 className="text-[clamp(44px,5.6vw,80px)] leading-[0.96] font-bold tracking-[-0.05em]">
             {offersIntro.title}
             <Dot />
           </h2>
-          <p className="mt-6 text-[19px] leading-[1.45] text-muted sm:text-[21px]">{offersIntro.text}</p>
+          <p className={`mt-6 text-[19px] leading-[1.45] text-muted sm:text-[21px] ${mobileText}`}>{offersIntro.text}</p>
         </Reveal>
 
-        <div className="mt-16 grid grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] gap-5 md:mt-20">
+        <div
+          ref={carousel.trackRef}
+          className="mt-10 grid grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] gap-5 md:mt-20 max-md:-mx-5 max-md:flex max-md:snap-x max-md:snap-mandatory max-md:gap-3 max-md:overflow-x-auto max-md:px-5 max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden"
+        >
           {offers.map((offer, i) => (
-            <OfferCard key={offer.name} offer={offer} index={i} />
+            <OfferCard
+              key={offer.name}
+              offer={offer}
+              index={i}
+              mobile={carousel.isMobile}
+              cardRef={(element) => {
+                carousel.slides.current[i] = element;
+              }}
+            />
+          ))}
+        </div>
+        <div className="mt-3 flex justify-center md:hidden">
+          {offers.map((offer, i) => (
+            <button
+              key={offer.name}
+              type="button"
+              aria-label={`Voir l’offre ${offer.name}`}
+              aria-current={carousel.active === i ? "true" : undefined}
+              onClick={() => carousel.goTo(i, !reduceMotion)}
+              className="grid h-11 place-items-center rounded-[12px] px-1"
+            >
+              <span
+                aria-hidden="true"
+                className={`block h-1.5 rounded-[12px] transition-[width,background-color] duration-300 ${carousel.active === i ? "w-5 bg-violet" : "w-1.5 bg-white/20"}`}
+              />
+            </button>
           ))}
         </div>
 

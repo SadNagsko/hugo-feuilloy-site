@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { contactSection, hasPhone, phoneHref, site } from "../data/site";
-import { Container, Dot, EASE, pressable, primaryButton } from "./primitives";
+import { Container, Dot, EASE, mobileText, pressable, primaryButton } from "./primitives";
 import { Reveal } from "./Reveal";
 
 type Status = "idle" | "sending" | "success" | "error";
@@ -103,7 +103,7 @@ function ContactForm() {
   };
 
   return (
-    <div className="rounded-[28px] border border-white/[0.07] bg-surface p-6 sm:p-10">
+    <div className="rounded-[28px] border border-white/[0.07] bg-surface p-6 sm:p-10 max-md:rounded-[20px] max-md:p-5">
       <AnimatePresence mode="wait">
         {status === "success" ? (
           <motion.div
@@ -201,14 +201,14 @@ function ContactForm() {
               </p>
             )}
 
-            <motion.div variants={item} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <motion.div variants={item} className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between max-md:flex-col max-md:items-stretch">
               <p className="text-[14px] leading-[1.45] text-muted">
                 Vos données servent uniquement à vous répondre.{" "}
                 <a href={site.links.privacy} className="text-violet-soft underline underline-offset-4 hover:text-ink">
                   Politique de confidentialité
                 </a>
               </p>
-              <button type="submit" disabled={status === "sending"} className={`${primaryButton} shrink-0 disabled:cursor-wait disabled:opacity-70`}>
+              <button type="submit" disabled={status === "sending"} className={`${primaryButton} shrink-0 disabled:cursor-wait disabled:opacity-70 max-md:w-full`}>
                 {status === "sending" ? "Envoi…" : "Envoyer ma demande"}
               </button>
             </motion.div>
@@ -221,10 +221,10 @@ function ContactForm() {
 
 export function Contact() {
   return (
-    <section id="contact" className="pt-[120px] pb-[110px] md:pt-[160px] md:pb-[160px]">
-      <Container className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+    <section id="contact" className="pt-24 pb-24 md:pt-[160px] md:pb-[160px]">
+      <Container className="grid gap-14 lg:grid-cols-12 lg:gap-16 max-md:gap-10">
         <div className="lg:col-span-5">
-          <Reveal className="text-center lg:sticky lg:top-28 lg:text-left">
+          <Reveal className="text-center lg:sticky lg:top-28 lg:text-left max-md:text-left">
             <h2 className="text-[clamp(48px,5.6vw,88px)] leading-[0.94] font-bold tracking-[-0.055em]">
               <span className="block">{contactSection.titleLines[0]}</span>
               <span className="block">
@@ -232,9 +232,9 @@ export function Contact() {
                 <Dot />
               </span>
             </h2>
-            <p className="mx-auto mt-7 max-w-[520px] text-[19px] leading-[1.45] text-muted lg:mx-0">{contactSection.text}</p>
-            <div className="mt-8 flex flex-col items-center gap-2 lg:items-start">
-              <a href={`mailto:${site.email}`} className="text-[24px] font-semibold tracking-[-0.02em] break-all underline decoration-white/20 underline-offset-[6px] hover:decoration-violet-soft">
+            <p className={`mx-auto mt-7 max-w-[520px] text-[19px] leading-[1.45] text-muted lg:mx-0 max-md:mx-0 ${mobileText}`}>{contactSection.text}</p>
+            <div className="mt-8 flex flex-col items-center gap-2 lg:items-start max-md:items-start">
+              <a href={`mailto:${site.email}`} className="text-[24px] font-semibold tracking-[-0.02em] break-all max-md:text-[20px] underline decoration-white/20 underline-offset-[6px] hover:decoration-violet-soft">
                 {site.email}
               </a>
               {hasPhone && (

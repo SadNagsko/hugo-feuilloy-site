@@ -5,8 +5,8 @@ export const site = {
   url: "https://hugofeuilloy.fr",
   legalName: "Hugo Feuilloy EI",
   initials: "HF",
-  email: "bonjour@hugofeuilloy.fr",
-  phone: "TODO_TELEPHONE",
+  email: "hugofeuilloy41@gmail.com",
+  phone: "07 71 64 32 45",
   area: "Blois, France",
   portrait: "/hugo.webp",
   seo: {
@@ -51,6 +51,8 @@ export const nav = [
   { label: "Contact", href: "#contact" },
 ];
 
+export const mobileMenuCta = { label: "Demander un devis", href: "#contact" };
+
 export const primaryCta = { label: "Démarrer mon projet", href: "#formulaire" };
 
 export const hero = {
@@ -59,7 +61,9 @@ export const hero = {
   words: ["vendent", "rassurent", "durent", "marquent", "travaillent"],
   intervalMs: 2800,
   text: "Commerces, indépendants, associations ou PME : sites vitrines, boutiques en ligne et outils sur mesure, finis jusqu’au dernier pixel.",
+  textShort: "Sites vitrines, boutiques en ligne et outils sur mesure, finis jusqu’au dernier pixel.",
   secondary: { label: "Voir les réalisations", href: "#realisations" },
+  proofShort: ["Basé près de Blois", "Partout en France", "Réponse sous 24 h", `Suivi ${maintenance.priceLabel}`],
   proof: ["Basé près de Blois, partout en France", "Un seul interlocuteur", "Réponse sous 24 h", `Suivi ${maintenance.priceLabel}`],
 };
 

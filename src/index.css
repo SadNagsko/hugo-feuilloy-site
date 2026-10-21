@@ -61,3 +61,15 @@
   }
 
 }
+
+@media (max-width: 767.98px) {
+  p {
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+}

@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { projects, projectsIntro, type Project } from "../data/projects";
-import { ArrowUpRight, Container, Dot, useImageStatus, useReducedMotionSafe } from "./primitives";
+import { ArrowUpRight, Container, Dot, mobileText, useImageStatus, useIsMobile, useReducedMotionSafe } from "./primitives";
 import { Reveal } from "./Reveal";
 
 type ShotProps = {
@@ -52,12 +52,13 @@ function ProjectCard({ project }: { project: Project }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotionSafe();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "start 0.55"] });
-  const scale = useTransform(scrollYProgress, [0, 1], [0.9, 1]);
+  const isMobile = useIsMobile();
+  const scale = useTransform(scrollYProgress, [0, 1], [isMobile ? 0.96 : 0.9, 1]);
   const opacity = useTransform(scrollYProgress, [0, 1], [0.4, 1]);
   const { theme, url } = project;
   const hoverable = Boolean(url) && !reduceMotion;
 
-  const cardClass = `flex flex-wrap items-center gap-12 rounded-[32px] p-6 sm:p-10 lg:p-14 ${project.reversed ? "flex-row-reverse" : ""}`;
+  const cardClass = `flex flex-wrap items-center gap-12 rounded-[32px] p-6 sm:p-10 lg:p-14 max-md:flex-col max-md:flex-nowrap max-md:items-stretch max-md:gap-6 max-md:rounded-[24px] max-md:p-6 ${project.reversed ? "flex-row-reverse" : ""}`;
   const cardStyle = {
     backgroundColor: theme.background,
     color: theme.text,
@@ -66,12 +67,12 @@ function ProjectCard({ project }: { project: Project }) {
 
   const content = (
     <>
-      <div className="min-w-0 flex-[1_1_300px]">
+      <div className="min-w-0 flex-[1_1_300px] max-md:flex-none">
         <p className="text-[14px] font-medium" style={{ color: theme.label }}>
           {project.label}
         </p>
-        <h3 className="mt-4 text-[clamp(30px,3.4vw,44px)] leading-[1] font-bold tracking-[-0.045em]">{project.name}</h3>
-        <p className="mt-5 text-[18px] leading-[1.5]" style={{ color: theme.muted }}>
+        <h3 className="mt-4 text-[clamp(30px,3.4vw,44px)] leading-[1] font-bold tracking-[-0.045em] max-md:mt-3">{project.name}</h3>
+        <p className={`mt-5 text-[18px] leading-[1.5] max-md:mt-4 ${mobileText}`} style={{ color: theme.muted }}>
           {project.description}
         </p>
         {url && (
@@ -82,18 +83,18 @@ function ProjectCard({ project }: { project: Project }) {
         )}
       </div>
 
-      <div className="relative h-[300px] min-w-0 flex-[2_1_520px] sm:h-[380px]">
+      <div className="relative h-[300px] min-w-0 flex-[2_1_520px] sm:h-[380px] max-md:aspect-[16/10] max-md:h-auto max-md:flex-none">
         <motion.div
           variants={hoverable ? { hover: { scale: 1.02 } } : undefined}
           transition={hoverSpring}
-          className={`absolute top-0 h-[86%] w-[90%] overflow-hidden rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.18)] ${project.reversed ? "right-0" : "left-0"}`}
+          className={`absolute top-0 h-[86%] w-[90%] overflow-hidden rounded-2xl shadow-[0_24px_60px_rgba(0,0,0,0.18)] max-md:inset-0 max-md:h-full max-md:w-full max-md:rounded-xl ${project.reversed ? "right-0" : "left-0"}`}
         >
           <Shot src={`/projets/${project.slug}-desktop.webp`} alt={`Page d’accueil du site ${project.name}`} colors={theme.placeholder} variant="desktop" />
         </motion.div>
         <motion.div
           variants={hoverable ? { hover: { y: -6 } } : undefined}
           transition={hoverSpring}
-          className={`absolute bottom-0 h-[240px] w-[120px] overflow-hidden rounded-[24px] border-[6px] border-[#0A0A0C] bg-[#0A0A0C] shadow-[0_24px_50px_rgba(0,0,0,0.28)] sm:h-[320px] sm:w-[160px] sm:rounded-[28px] ${project.reversed ? "left-0" : "right-0"}`}
+          className={`absolute bottom-0 h-[240px] w-[120px] overflow-hidden rounded-[24px] border-[6px] border-[#0A0A0C] bg-[#0A0A0C] shadow-[0_24px_50px_rgba(0,0,0,0.28)] sm:h-[320px] sm:w-[160px] sm:rounded-[28px] max-md:hidden ${project.reversed ? "left-0" : "right-0"}`}
         >
           <div className="relative h-full overflow-hidden rounded-[18px] sm:rounded-[22px]">
             <Shot src={`/projets/${project.slug}-mobile.webp`} alt={`Version mobile du site ${project.name}`} colors={theme.placeholder} variant="mobile" />
@@ -113,7 +114,7 @@ function ProjectCard({ project }: { project: Project }) {
           aria-label={`${project.linkLabel} ${project.name} (nouvel onglet)`}
           whileHover={hoverable ? "hover" : undefined}
           style={cardStyle}
-          className={`${cardClass} cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-violet`}
+          className={`${cardClass} cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-violet max-md:transition-transform max-md:duration-[120ms] max-md:active:scale-[0.98]`}
         >
           {content}
         </motion.a>
@@ -128,16 +129,16 @@ function ProjectCard({ project }: { project: Project }) {
 
 export function Projects() {
   return (
-    <section id="realisations" className="py-[110px] md:py-[160px]">
+    <section id="realisations" className="py-24 md:py-[160px]">
       <Container>
         <Reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
           <h2 className="text-[clamp(44px,5.6vw,80px)] leading-[0.96] font-bold tracking-[-0.05em]">
             {projectsIntro.title}
             <Dot />
           </h2>
-          <p className="max-w-[380px] text-[19px] leading-[1.45] text-muted">{projectsIntro.text}</p>
+          <p className={`max-w-[380px] text-[19px] leading-[1.45] text-muted ${mobileText}`}>{projectsIntro.text}</p>
         </Reveal>
-        <div className="mt-14 flex flex-col gap-6 md:mt-20">
+        <div className="mt-10 flex flex-col gap-6 md:mt-20">
           {projects.map((project) => (
             <ProjectCard key={project.slug} project={project} />
           ))}

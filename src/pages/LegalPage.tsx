@@ -16,17 +16,17 @@ function Block({ block }: { block: LegalBlock }) {
 
 export function LegalPage({ document }: { document: LegalDocument }) {
   return (
-    <article className="mx-auto max-w-[760px] px-5 pt-20 pb-[110px] sm:px-8 md:pt-28 md:pb-[160px]">
+    <article className="mx-auto max-w-[760px] px-5 pt-20 pb-24 md:px-8 md:pt-28 md:pb-[160px]">
       <h1 className="text-[clamp(44px,6vw,80px)] leading-[0.96] font-bold tracking-[-0.05em]">
         {document.title}
         <Dot />
       </h1>
       <p className="mt-6 text-[15px] text-muted">Dernière mise à jour : {legal.updated}</p>
-      <div className="mt-16 flex flex-col gap-12">
+      <div className="mt-10 flex flex-col gap-12 md:mt-16">
         {document.sections.map((section) => (
           <section key={section.title} className="border-t border-white/[0.07] pt-8">
             <h2 className="text-[22px] leading-[1.2] font-semibold tracking-[-0.02em]">{section.title}</h2>
-            <div className="mt-4 flex flex-col gap-3 text-[17px] leading-[1.6] text-muted">
+            <div className="mt-4 flex flex-col gap-3 text-[17px] leading-[1.6] text-muted max-md:leading-[1.5]">
               {section.blocks.map((block, i) => (
                 <Block key={i} block={block} />
               ))}
