@@ -47,6 +47,21 @@ function clean(mixed $value, int $max, bool $multiline = false): string
     return mb_substr(trim((string) $text), 0, $max);
 }
 
+function clientIp(): string
+{
+    $remote = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+    $forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? '';
+    $behindProxy = filter_var($remote, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false;
+    if ($behindProxy && $forwarded !== '') {
+        $parts = array_map('trim', explode(',', $forwarded));
+        $last = end($parts);
+        if (is_string($last) && filter_var($last, FILTER_VALIDATE_IP)) {
+            return $last;
+        }
+    }
+    return $remote;
+}
+
 function rateLimited(string $ip): bool
 {
     $file = sys_get_temp_dir() . '/hf-contact-' . hash('sha256', $ip) . '.json';
@@ -62,7 +77,13 @@ function rateLimited(string $ip): bool
 }
 
 $env = loadEnv(dirname(__DIR__) . '/.env');
-$config = static fn (string $key, string $default = ''): string => $env[$key] ?? $default;
+$config = static function (string $key, string $default = '') use ($env): string {
+    if (isset($env[$key]) && $env[$key] !== '') {
+        return $env[$key];
+    }
+    $value = getenv($key);
+    return $value !== false && $value !== '' ? $value : $default;
+};
 
 if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
     header('Allow: POST');
@@ -103,7 +124,7 @@ if ($fields['nom'] === '' || $fields['message'] === '' || !filter_var($fields['e
     respond(422, ['ok' => false, 'error' => 'validation']);
 }
 
-if (rateLimited($_SERVER['REMOTE_ADDR'] ?? 'unknown')) {
+if (rateLimited(clientIp())) {
     respond(429, ['ok' => false, 'error' => 'rate']);
 }
 

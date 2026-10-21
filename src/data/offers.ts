@@ -75,5 +75,5 @@ export const maintenance = {
   priceLabel: `dès ${maintenanceFrom} €/mois`,
   toggleLabel: "Comparer les formules",
   perMonth: "/mois",
-  note: "Sans engagement, résiliable à tout moment. La première année d’hébergement est incluse avec chaque site.",
+  note: "Sans engagement, résiliable à tout moment. Jusqu’à trois mois de maintenance offerts sur les gros projets.",
 };
