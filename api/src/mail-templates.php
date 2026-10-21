@@ -42,7 +42,6 @@ function mailLayout(string $title, string $preheader, string $content, string $f
     $ink = MAIL_INK;
     $line = MAIL_LINE;
     $soft = MAIL_SOFT;
-    $violet = MAIL_VIOLET;
 
     return <<<HTML
 <!doctype html>
@@ -64,7 +63,7 @@ function mailLayout(string $title, string $preheader, string $content, string $f
           <td style="padding:0 4px 20px;">
             <table role="presentation" cellpadding="0" cellspacing="0">
               <tr>
-                <td width="34" height="34" align="center" valign="middle" style="width:34px;height:34px;background:{$violet};border-radius:10px;font-family:{$font};font-size:13px;font-weight:700;color:#FFFFFF;letter-spacing:-0.3px;">HF</td>
+                <td width="34" height="34" align="center" valign="middle" style="width:34px;height:34px;background:#111113;border-radius:10px;font-family:{$font};font-size:13px;font-weight:700;color:#FFFFFF;letter-spacing:-0.3px;">HF<span style="color:#8B6DFF;">.</span></td>
                 <td style="padding-left:12px;font-family:{$font};font-size:15px;font-weight:600;color:{$ink};">Hugo Feuilloy</td>
               </tr>
             </table>

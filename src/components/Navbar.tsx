@@ -3,7 +3,6 @@ import { AnimatePresence, motion, type Variants } from "motion/react";
 import { mobileMenuCta, nav, site } from "../data/site";
 import { setMenuOpen } from "../hooks/menuState";
 import { scrollToHash } from "../hooks/useLenis";
-import { LogoMark } from "./LogoMark";
 import { pressable, primaryButton } from "./primitives";
 
 const barSpring = { type: "spring", bounce: 0, duration: 0.26 } as const;
@@ -91,8 +90,8 @@ export function Navbar({ home }: { home: boolean }) {
       <div className="relative mx-auto max-w-[1200px]">
         <header className={`relative z-10 rounded-[18px] py-2 pr-2 pl-4 max-md:rounded-[16px] ${glass}`}>
           <nav aria-label="Navigation principale" className="flex items-center justify-between gap-4">
-            <a href={home ? "#top" : "/"} className={`flex min-h-11 items-center gap-2.5 rounded-[12px] ${pressable}`}>
-              <LogoMark className="size-8 shrink-0 max-md:size-[30px]" />
+            <a href={home ? "#top" : "/"} aria-label={`${site.name}, accueil`} className={`flex min-h-11 items-center gap-2.5 rounded-[12px] ${pressable}`}>
+              <img src="/brand/hf-mark-on-dark.svg" alt="" width="32" height="32" className="size-8 shrink-0 max-md:size-[30px]" />
               <span className="text-[15px] font-semibold">{site.name}</span>
             </a>
 
