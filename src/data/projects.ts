@@ -28,7 +28,7 @@ export const projects: Project[] = [
   {
     slug: "les-belles-demois-ailes",
     name: "Les Belles Demois’Ailes",
-    label: "E-commerce · Cour-Cheverny",
+    label: "E-commerce · Contres",
     description: "Une miellerie artisanale qui vend désormais sa production en direct, sans intermédiaire.",
     linkLabel: "Voir le site",
     reversed: true,
