@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useSyncExternalStore } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { projects, projectsIntro, type ClientProject, type PersoProject, type Project } from "../data/projects";
 import { ArrowUpRight, Container, Dot, mobileText, useImageStatus, useIsMobile, useReducedMotionSafe } from "./primitives";
+import { NovaLive, type NovaLiveHandle } from "./NovaLive";
 import { Reveal } from "./Reveal";
 
 type ShotProps = {
@@ -145,7 +146,6 @@ function ClientCard({ project }: { project: ClientProject }) {
   );
 }
 
-const FACE_INTERVAL_MS = 4000;
 const finePointerQuery = "(hover: hover) and (pointer: fine)";
 const subscribeFinePointer = (onChange: () => void) => {
   const media = window.matchMedia(finePointerQuery);
@@ -153,46 +153,15 @@ const subscribeFinePointer = (onChange: () => void) => {
   return () => media.removeEventListener("change", onChange);
 };
 
-/** Change d'expression toutes les 4 s, seulement quand la carte est visible et l'onglet affiché. */
-function useFaceCycle(count: number, enabled: boolean) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [index, setIndex] = useState(0);
-  const [inView, setInView] = useState(false);
-  const [tabVisible, setTabVisible] = useState(true);
-
-  useEffect(() => {
-    const element = ref.current;
-    if (!enabled || !element) return;
-    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.3 });
-    observer.observe(element);
-    const onVisibility = () => setTabVisible(document.visibilityState === "visible");
-    onVisibility();
-    document.addEventListener("visibilitychange", onVisibility);
-    return () => {
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
-    };
-  }, [enabled]);
-
-  useEffect(() => {
-    if (!enabled || !inView || !tabVisible) return;
-    const timer = window.setInterval(() => setIndex((current) => (current + 1) % count), FACE_INTERVAL_MS);
-    return () => window.clearInterval(timer);
-  }, [enabled, inView, tabVisible, count]);
-
-  return { ref, index: enabled ? index : 0 };
-}
-
 function PersoCard({ project }: { project: PersoProject }) {
-  const reduceMotion = useReducedMotionSafe();
   const finePointer = useSyncExternalStore(subscribeFinePointer, () => window.matchMedia(finePointerQuery).matches, () => false);
-  const faces = useFaceCycle(project.faces.length, !reduceMotion);
-  const hoverable = finePointer && !reduceMotion;
+  const nova = useRef<NovaLiveHandle>(null);
   const title = project.title.replace(/\.$/, "");
 
   return (
-    <motion.article
-      whileHover="hover"
+    <article
+      onPointerEnter={() => finePointer && nova.current?.setState("listening")}
+      onPointerLeave={() => finePointer && nova.current?.setState("idle")}
       className={`${cardLayout(project.reversed)} bg-surface text-ink shadow-[inset_0_0_0_1px_rgba(255,255,255,0.07)]`}
     >
       <div className={textColumn}>
@@ -212,29 +181,11 @@ function PersoCard({ project }: { project: PersoProject }) {
       </div>
 
       <div className={visualZone}>
-        <div ref={faces.ref} className="absolute inset-0 grid place-items-center overflow-hidden rounded-2xl border border-white/[0.06] bg-bg">
-          <motion.div
-            variants={{ hover: hoverable ? { y: -6 } : {} }}
-            transition={hoverSpring}
-            className="relative aspect-square w-[34%] max-md:w-[38%]"
-          >
-            {project.faces.map((src, i) => (
-              <img
-                key={src}
-                src={src}
-                alt={i === 0 ? project.alt : ""}
-                aria-hidden={i === 0 ? undefined : true}
-                width={800}
-                height={800}
-                loading="lazy"
-                decoding="async"
-                className={`absolute inset-0 h-full w-full object-contain transition-opacity duration-[600ms] ${faces.index === i ? "opacity-100" : "opacity-0"}`}
-              />
-            ))}
-          </motion.div>
+        <div className="absolute inset-0 overflow-hidden rounded-2xl border border-white/[0.06] bg-bg">
+          <NovaLive ref={nova} fallback={project.image} label={project.alt} />
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }
 

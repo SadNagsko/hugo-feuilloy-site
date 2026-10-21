@@ -27,7 +27,8 @@ export type PersoProject = {
   title: string;
   description: string;
   tags: string[];
-  faces: string[];
+  /** Image fixe, affichée tant que l'animation n'est pas prête (ou si elle échoue). */
+  image: string;
   alt: string;
   reversed?: boolean;
 };
@@ -66,7 +67,7 @@ export const projects: Project[] = [
     description:
       "Mon assistante vocale, conçue et développée pour mon activité : elle suit mes projets, surveille les sites de mes clients et prépare leurs rapports mensuels. Je valide tout ce qu’elle produit.",
     tags: ["React", "Voix", "Automatisation", "IA"],
-    faces: ["/projets/nova-face.webp", "/projets/nova-face-2.webp", "/projets/nova-face-3.webp"],
-    alt: "Nova, l’assistante de Hugo",
+    image: "/projets/nova-face.webp",
+    alt: "Nova, l’assistante de Hugo, animée",
   },
 ];
