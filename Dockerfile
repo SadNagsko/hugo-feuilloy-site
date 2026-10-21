@@ -18,5 +18,6 @@ RUN a2enmod headers
 COPY docker/apache-site.conf /etc/apache2/conf-enabled/site.conf
 COPY --from=front /app/dist/ /var/www/html/
 COPY api/public/ /var/www/api/public/
+COPY api/src/ /var/www/api/src/
 COPY --from=vendor /app/vendor/ /var/www/api/vendor/
 EXPOSE 80

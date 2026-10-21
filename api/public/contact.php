@@ -6,6 +6,7 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/src/mail-templates.php';
 
 const MAX_BODY_BYTES = 20000;
 const RATE_LIMIT = 5;
@@ -130,23 +131,14 @@ if (rateLimited(clientIp())) {
     respond(429, ['ok' => false, 'error' => 'rate']);
 }
 
-$labels = [
-    'nom' => 'Nom',
-    'entreprise' => 'Entreprise',
-    'email' => 'Email',
-    'telephone' => 'Téléphone',
-    'besoins' => 'Besoins',
-    'budget' => 'Budget',
-];
-$details = [];
-foreach ($labels as $key => $label) {
-    if ($fields[$key] !== '') {
-        $details[] = "{$label} : {$fields[$key]}";
-    }
-}
+$months = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
+$now = new DateTimeImmutable('now', new DateTimeZone('Europe/Paris'));
+$receivedAt = $now->format('j') . ' ' . $months[(int) $now->format('n') - 1] . ' ' . $now->format('Y') . ' à ' . $now->format('H\\hi');
+$siteUrl = $config('SITE_URL', 'https://hugofeuilloy.fr');
+$siteHost = (string) preg_replace('#^https?://#', '', $siteUrl);
 
-$mail = new PHPMailer(true);
-try {
+$smtp = static function () use ($config): PHPMailer {
+    $mail = new PHPMailer(true);
     $mail->CharSet = PHPMailer::CHARSET_UTF8;
     $mail->isSMTP();
     $mail->Host = $config('SMTP_HOST', 'smtp.gmail.com');
@@ -155,17 +147,47 @@ try {
     $mail->Username = $config('SMTP_USER');
     $mail->Password = $config('SMTP_PASS');
     $mail->SMTPSecure = $mail->Port === 465 ? PHPMailer::ENCRYPTION_SMTPS : PHPMailer::ENCRYPTION_STARTTLS;
+    return $mail;
+};
 
-    $mail->setFrom($config('SMTP_USER'), $config('MAIL_FROM_NAME', 'Site hugofeuilloy.fr'));
+$mail = $smtp();
+try {
+    $mail->setFrom($config('SMTP_USER'), $config('MAIL_FROM_NAME', 'Site ' . $siteHost));
     $mail->addAddress($config('CONTACT_TO', $config('SMTP_USER')));
     $mail->addReplyTo($fields['email'], $fields['nom']);
 
     $mail->Subject = 'Nouvelle demande – ' . $fields['nom'] . ($fields['entreprise'] !== '' ? " ({$fields['entreprise']})" : '');
-    $mail->Body = $fields['message'] . "\n\n—\n" . implode("\n", $details);
+    $mail->isHTML(true);
+    $mail->Body = notificationHtml($fields, $receivedAt, $siteHost);
+    $mail->AltBody = notificationText($fields, $receivedAt);
 
     $mail->send();
-    respond(200, ['ok' => true]);
 } catch (Exception) {
     error_log('Contact form: ' . $mail->ErrorInfo);
     respond(502, ['ok' => false, 'error' => 'send']);
 }
+
+if ($config('SEND_CONFIRMATION', '1') === '1') {
+    $me = [
+        'name' => $config('SIGNATURE_NAME', 'Hugo Feuilloy'),
+        'role' => $config('SIGNATURE_ROLE', 'Développeur web freelance'),
+        'phone' => $config('SIGNATURE_PHONE'),
+        'email' => $config('CONTACT_TO', $config('SMTP_USER')),
+        'site' => $siteUrl,
+    ];
+    $confirmation = $smtp();
+    try {
+        $confirmation->setFrom($config('SMTP_USER'), $me['name']);
+        $confirmation->addAddress($fields['email'], $fields['nom']);
+        $confirmation->addReplyTo($me['email'], $me['name']);
+        $confirmation->Subject = 'Bien reçu, je reviens vers vous sous 24 h';
+        $confirmation->isHTML(true);
+        $confirmation->Body = confirmationHtml($fields['nom'], $me);
+        $confirmation->AltBody = confirmationText($fields['nom'], $me);
+        $confirmation->send();
+    } catch (Exception) {
+        error_log('Contact confirmation: ' . $confirmation->ErrorInfo);
+    }
+}
+
+respond(200, ['ok' => true]);
