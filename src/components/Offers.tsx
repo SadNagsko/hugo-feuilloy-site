@@ -31,7 +31,7 @@ function OfferCard({ offer, index, mobile, cardRef }: OfferCardProps) {
     <motion.article
       ref={cardRef}
       {...motionProps}
-      className={`flex flex-col rounded-[28px] border bg-surface p-8 sm:p-10 max-md:w-[85%] max-md:shrink-0 max-md:snap-center max-md:p-7 ${offer.badge ? "border-violet/40" : "border-white/[0.07]"}`}
+      className={`flex flex-col rounded-[28px] border bg-surface p-8 sm:p-10 max-md:w-[300px] max-md:shrink-0 max-md:snap-center max-md:rounded-[24px] max-md:px-6 max-md:py-7 ${offer.badge ? "border-violet/40" : "border-white/[0.07]"}`}
     >
       <div className="flex min-h-7 items-center justify-between gap-3">
         <h3 className="text-[17px] font-semibold text-violet-soft">{offer.name}</h3>
@@ -39,7 +39,7 @@ function OfferCard({ offer, index, mobile, cardRef }: OfferCardProps) {
       </div>
       <p className="mt-6 flex items-baseline gap-2">
         {offer.from && <span className="text-[17px] text-muted">dès</span>}
-        <span className="text-[46px] leading-none font-bold tracking-[-0.045em]">{offer.price}</span>
+        <span className="text-[46px] leading-none font-bold tracking-[-0.045em] max-md:text-[40px]">{offer.price}</span>
       </p>
       <p className={`mt-5 text-[18px] leading-[1.45] text-muted ${mobileText}`}>{offer.text}</p>
       <ul className="mt-8">
@@ -199,17 +199,17 @@ export function Offers() {
   return (
     <section id="offres" className="border-y border-white/[0.07] bg-bg-deep py-24 md:py-[150px]">
       <Container>
-        <Reveal className="mx-auto max-w-[680px] text-center max-md:mx-0 max-md:text-left">
+        <Reveal className="mx-auto max-w-[680px] text-center">
           <h2 className="text-[clamp(44px,5.6vw,80px)] leading-[0.96] font-bold tracking-[-0.05em]">
             {offersIntro.title}
             <Dot />
           </h2>
-          <p className={`mt-6 text-[19px] leading-[1.45] text-muted sm:text-[21px] ${mobileText}`}>{offersIntro.text}</p>
+          <p className={`mt-6 text-[19px] leading-[1.45] text-muted sm:text-[21px] max-md:text-balance ${mobileText}`}>{offersIntro.text}</p>
         </Reveal>
 
         <div
           ref={carousel.trackRef}
-          className="mt-10 grid grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] gap-5 md:mt-20 max-md:-mx-5 max-md:flex max-md:snap-x max-md:snap-mandatory max-md:gap-3 max-md:overflow-x-auto max-md:px-5 max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden"
+          className="mt-10 grid grid-cols-[repeat(auto-fit,minmax(min(100%,280px),1fr))] gap-5 md:mt-20 max-md:-mx-5 max-md:flex max-md:snap-x max-md:snap-mandatory max-md:gap-3 max-md:overflow-x-auto max-md:scroll-px-5 max-md:px-5 max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden"
         >
           {offers.map((offer, i) => (
             <OfferCard
@@ -235,15 +235,15 @@ export function Offers() {
             >
               <span
                 aria-hidden="true"
-                className={`block h-1.5 rounded-[12px] transition-[width,background-color] duration-300 ${carousel.active === i ? "w-5 bg-violet" : "w-1.5 bg-white/20"}`}
+                className={`block h-1.5 rounded-[12px] transition-[width,background-color] duration-[260ms] ${carousel.active === i ? "w-5 bg-violet" : "w-1.5 bg-white/20"}`}
               />
             </button>
           ))}
         </div>
 
         <Reveal className="mt-5">
-          <div className="rounded-[22px] border border-white/[0.07] bg-surface">
-            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 py-4 sm:px-8">
+          <div className="rounded-[22px] border border-white/[0.07] bg-surface max-md:rounded-[20px]">
+            <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 py-4 sm:px-8 max-md:p-5">
               <p className="text-[17px] leading-[1.45]">
                 {maintenance.text} <span className="text-muted">· {maintenance.priceLabel}</span>
               </p>

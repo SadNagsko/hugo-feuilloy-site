@@ -48,13 +48,13 @@ export function Hero() {
   const allWords = `${hero.words.slice(0, -1).join(", ")} et ${hero.words[hero.words.length - 1]}`;
 
   return (
-    <section className="flex min-h-[calc(100svh-70px)] flex-col max-md:min-h-[calc(100svh-72px)]">
-      <Container className="flex flex-1 flex-col items-center justify-center gap-[34px] py-20 text-center max-md:items-start max-md:text-left">
-        <motion.p {...enter(0)} className="text-[15px] text-muted">
+    <section data-hero className="flex min-h-[calc(100svh-70px)] flex-col max-md:min-h-[calc(100svh-72px)]">
+      <Container className="flex flex-1 flex-col items-center justify-center gap-[34px] py-20 text-center">
+        <motion.p {...enter(0)} className="text-[15px] text-muted max-md:text-[14px]">
           {hero.eyebrow}
         </motion.p>
 
-        <h1 className="w-full text-[clamp(56px,9.4vw,148px)] leading-[0.94] font-bold tracking-[-0.055em]">
+        <h1 className="w-full text-[clamp(56px,9.4vw,148px)] leading-[0.94] font-bold tracking-[-0.055em] max-md:text-[58px] max-[379.98px]:text-[54px]">
           <span className="sr-only">
             {hero.lead} {allWords}.
           </span>
@@ -84,16 +84,16 @@ export function Hero() {
           </span>
         </h1>
 
-        <motion.p {...enter(2)} className={`max-w-[600px] text-[19px] leading-[1.45] text-muted sm:text-[21px] ${mobileText}`}>
+        <motion.p {...enter(2)} className={`max-w-[600px] text-[19px] leading-[1.45] text-muted sm:text-[21px] max-md:text-balance ${mobileText}`}>
           <span className="max-md:hidden">{hero.text}</span>
           <span className="md:hidden">{hero.textShort}</span>
         </motion.p>
 
-        <motion.div {...enter(3)} className="flex flex-col items-center gap-x-8 gap-y-4 sm:flex-row max-md:w-full max-md:flex-col max-md:items-start">
+        <motion.div {...enter(3)} className="flex flex-col items-center gap-x-8 gap-y-4 sm:flex-row max-md:w-full max-md:flex-col max-md:items-center max-md:gap-y-2">
           <a href={primaryCta.href} className={`${primaryButton} max-md:w-full`}>
             {primaryCta.label}
           </a>
-          <a href={hero.secondary.href} className={`inline-flex min-h-11 items-center gap-1 text-[17px] font-medium text-violet-soft hover:text-ink ${pressable}`}>
+          <a href={hero.secondary.href} className={`inline-flex min-h-11 items-center gap-1 text-[17px] max-md:min-h-12 font-medium text-violet-soft hover:text-ink ${pressable}`}>
             {hero.secondary.label}
             <Chevron />
           </a>
@@ -107,9 +107,9 @@ export function Hero() {
               <li key={item}>{item}</li>
             ))}
           </ul>
-          <ul className="flex flex-col gap-2.5 py-6 text-[14px] text-muted md:hidden">
+          <ul className="grid grid-cols-2 gap-x-4 gap-y-3 py-6 text-[14px] text-muted md:hidden">
             {hero.proofShort.map((item) => (
-              <li key={item} className="flex items-center gap-2.5">
+              <li key={item} className="flex items-center justify-center gap-2 text-center">
                 <span aria-hidden="true" className="size-1 shrink-0 rounded-full bg-violet" />
                 {item}
               </li>

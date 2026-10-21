@@ -1,5 +1,6 @@
 import { MotionConfig } from "motion/react";
 import { Footer } from "./components/Footer";
+import { MobileCtaBar } from "./components/MobileCtaBar";
 import { Navbar } from "./components/Navbar";
 import { legalNotice, privacyPolicy } from "./data/legal";
 import { site, type RoutePath } from "./data/site";
@@ -23,7 +24,8 @@ export default function App({ path }: { path: RoutePath }) {
         <main>
           <Page path={path} />
         </main>
-        <Footer />
+        <Footer ctaBar={path === "/"} />
+        {path === "/" && <MobileCtaBar />}
       </div>
     </MotionConfig>
   );

@@ -1,9 +1,10 @@
 import { site } from "../data/site";
 
-export function Footer() {
+export function Footer({ ctaBar = false }: { ctaBar?: boolean }) {
+  const bottom = ctaBar ? "max-md:pb-[calc(2rem+77px+env(safe-area-inset-bottom))]" : "max-md:pb-[calc(2rem+env(safe-area-inset-bottom))]";
   return (
     <footer className="border-t border-white/[0.07]">
-      <div className="mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-8 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between md:px-8 max-md:pb-[calc(2rem+env(safe-area-inset-bottom))]">
+      <div className={`mx-auto flex max-w-[1200px] flex-col gap-3 px-5 py-8 text-[13px] text-muted sm:flex-row sm:items-center sm:justify-between md:px-8 max-md:flex-col max-md:items-center max-md:gap-1 max-md:text-center ${bottom}`}>
         <p>
           © {new Date().getFullYear()} {site.legalName} · {site.area}
         </p>

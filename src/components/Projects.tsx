@@ -46,6 +46,15 @@ function Shot({ src, alt, colors, variant }: ShotProps) {
   );
 }
 
+function ProjectLink({ label, color, className }: { label: string; color: string; className: string }) {
+  return (
+    <span className={`inline-flex min-h-11 items-center gap-1.5 text-[17px] font-semibold ${className}`} style={{ color }}>
+      {label}
+      <ArrowUpRight className="size-4" />
+    </span>
+  );
+}
+
 const hoverSpring = { type: "spring", bounce: 0, duration: 0.45 } as const;
 
 function ProjectCard({ project }: { project: Project }) {
@@ -68,19 +77,14 @@ function ProjectCard({ project }: { project: Project }) {
   const content = (
     <>
       <div className="min-w-0 flex-[1_1_300px] max-md:flex-none">
-        <p className="text-[14px] font-medium" style={{ color: theme.label }}>
+        <p className="text-[14px] font-medium max-md:text-[13px]" style={{ color: theme.label }}>
           {project.label}
         </p>
-        <h3 className="mt-4 text-[clamp(30px,3.4vw,44px)] leading-[1] font-bold tracking-[-0.045em] max-md:mt-3">{project.name}</h3>
-        <p className={`mt-5 text-[18px] leading-[1.5] max-md:mt-4 ${mobileText}`} style={{ color: theme.muted }}>
+        <h3 className="mt-4 text-[clamp(30px,3.4vw,44px)] leading-[1] font-bold tracking-[-0.045em] max-md:mt-3 max-md:text-[32px]">{project.name}</h3>
+        <p className={`mt-5 text-[18px] leading-[1.5] max-md:mt-4 max-md:text-[16px]`} style={{ color: theme.muted }}>
           {project.description}
         </p>
-        {url && (
-          <span className="mt-7 inline-flex min-h-11 items-center gap-1.5 text-[17px] font-semibold" style={{ color: theme.link }}>
-            {project.linkLabel}
-            <ArrowUpRight className="size-4" />
-          </span>
-        )}
+        {url && <ProjectLink label={project.linkLabel} color={theme.link} className="mt-7 max-md:hidden" />}
       </div>
 
       <div className="relative h-[300px] min-w-0 flex-[2_1_520px] sm:h-[380px] max-md:aspect-[16/10] max-md:h-auto max-md:flex-none">
@@ -101,6 +105,7 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
         </motion.div>
       </div>
+      {url && <ProjectLink label={project.linkLabel} color={theme.link} className="-mt-2 md:hidden" />}
     </>
   );
 
@@ -131,12 +136,12 @@ export function Projects() {
   return (
     <section id="realisations" className="py-24 md:py-[160px]">
       <Container>
-        <Reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5">
+        <Reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5 max-md:flex-col max-md:items-center max-md:text-center">
           <h2 className="text-[clamp(44px,5.6vw,80px)] leading-[0.96] font-bold tracking-[-0.05em]">
             {projectsIntro.title}
             <Dot />
           </h2>
-          <p className={`max-w-[380px] text-[19px] leading-[1.45] text-muted ${mobileText}`}>{projectsIntro.text}</p>
+          <p className={`max-w-[380px] text-[19px] leading-[1.45] text-muted max-md:text-balance ${mobileText}`}>{projectsIntro.text}</p>
         </Reveal>
         <div className="mt-10 flex flex-col gap-6 md:mt-20">
           {projects.map((project) => (

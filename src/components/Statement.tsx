@@ -55,24 +55,24 @@ function InViewSentence({ sentence }: { sentence: Sentence }) {
 function MobileStatement() {
   return (
     <section aria-label="Méthode" className="border-t border-white/[0.07] bg-bg-deep py-24">
-      <div className="px-5">
-        <p className="text-[32px] leading-[1.15] font-semibold tracking-[-0.035em]">
+      <div className="px-5 text-center">
+        <p className="text-[32px] leading-[1.15] font-semibold tracking-[-0.035em] text-balance">
           {statement.sentences.map((sentence) => (
             <InViewSentence key={sentence.text} sentence={sentence} />
           ))}
         </p>
-        <ol className="mt-10 flex flex-col gap-6">
+        <ol className="mt-10 flex flex-col">
           {statement.steps.map((step, i) => (
             <motion.li
               key={step.label}
-              className="border-t border-white/[0.12] pt-5"
+              className="border-t border-white/10 py-5"
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ type: "spring", bounce: 0, duration: 0.6, delay: i * 0.1 }}
             >
-              <p className="text-[14px] font-medium text-violet-soft">{step.label}</p>
-              <p className="mt-2 text-[19px] leading-[1.25] font-semibold tracking-[-0.02em]">{step.text}</p>
+              <p className="text-[13px] font-medium text-violet-soft">{step.label}</p>
+              <p className="mt-2 text-[19px] leading-[1.25] font-semibold tracking-[-0.02em] text-balance">{step.text}</p>
             </motion.li>
           ))}
         </ol>
@@ -128,8 +128,8 @@ function ScrollStatement() {
 function StaticStatement() {
   return (
     <section aria-label="Méthode" className="border-t border-white/[0.07] bg-bg-deep py-24 md:py-[170px]">
-      <div className="mx-auto max-w-[1100px] px-5 md:px-8">
-        <p className={paragraph}>
+      <div className="mx-auto max-w-[1100px] px-5 md:px-8 max-md:text-center">
+        <p className={`${paragraph} max-md:text-balance`}>
           {statement.sentences.map((sentence) => (
             <Fragment key={sentence.text}>
               {sentence.text}

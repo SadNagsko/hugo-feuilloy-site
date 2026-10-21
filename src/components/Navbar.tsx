@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { mobileMenuCta, nav, site } from "../data/site";
+import { setMenuOpen } from "../hooks/menuState";
+import { scrollToHash } from "../hooks/useLenis";
 import { LogoMark } from "./LogoMark";
 import { pressable, primaryButton } from "./primitives";
 
-const barSpring = { type: "spring", bounce: 0, duration: 0.35 } as const;
+const barSpring = { type: "spring", bounce: 0, duration: 0.26 } as const;
 
 const menuList: Variants = {
   closed: {},
@@ -70,6 +72,7 @@ export function Navbar({ home }: { home: boolean }) {
   useMenuBehaviour(open, close, panelRef, toggleRef);
 
   useEffect(() => {
+    setMenuOpen(open);
     if (wasOpen.current && !open) toggleRef.current?.focus({ preventScroll: true });
     wasOpen.current = open;
   }, [open]);
@@ -78,21 +81,18 @@ export function Navbar({ home }: { home: boolean }) {
     setOpen(false);
     if (!home || !href.startsWith("#")) return;
     event.preventDefault();
-    requestAnimationFrame(() => {
-      document.querySelector(href)?.scrollIntoView();
-      history.replaceState(null, "", href);
-    });
+    requestAnimationFrame(() => scrollToHash(href));
   };
 
-  const glass = "border border-white/[0.07] bg-[rgba(11,10,18,0.72)] backdrop-blur-xl backdrop-saturate-150";
+  const glass = "border border-white/[0.07] bg-[rgba(11,10,18,0.72)] backdrop-blur-xl backdrop-saturate-150 max-md:bg-[rgba(11,10,18,0.82)]";
 
   return (
-    <div data-site-nav className="sticky top-0 z-20 px-4 pt-3.5">
+    <div data-site-nav className="sticky top-0 z-20 px-4 pt-3.5 max-md:px-3 max-md:pt-3">
       <div className="relative mx-auto max-w-[1200px]">
-        <header className={`relative z-10 rounded-[18px] py-2 pr-2 pl-4 ${glass}`}>
+        <header className={`relative z-10 rounded-[18px] py-2 pr-2 pl-4 max-md:rounded-[16px] ${glass}`}>
           <nav aria-label="Navigation principale" className="flex items-center justify-between gap-4">
             <a href={home ? "#top" : "/"} className={`flex min-h-11 items-center gap-2.5 rounded-[12px] ${pressable}`}>
-              <LogoMark className="size-8 shrink-0" />
+              <LogoMark className="size-8 shrink-0 max-md:size-[30px]" />
               <span className="text-[15px] font-semibold">{site.name}</span>
             </a>
 
@@ -121,15 +121,15 @@ export function Navbar({ home }: { home: boolean }) {
                 aria-controls="menu-mobile"
                 className={`relative grid size-11 place-items-center rounded-[12px] text-ink hover:bg-white/[0.06] md:hidden ${pressable}`}
               >
-                <span aria-hidden="true" className="relative block h-3 w-[18px]">
+                <span aria-hidden="true" className="relative block h-[9px] w-[18px]">
                   <motion.span
-                    className="absolute top-0 left-0 block h-[1.7px] w-full rounded-full bg-current"
-                    animate={open ? { y: 5, rotate: 45 } : { y: 0, rotate: 0 }}
+                    className="absolute top-0 left-0 block h-[2px] w-full rounded-full bg-current"
+                    animate={open ? { y: 3.5, rotate: 45 } : { y: 0, rotate: 0 }}
                     transition={barSpring}
                   />
                   <motion.span
-                    className="absolute bottom-0 left-0 block h-[1.7px] w-full rounded-full bg-current"
-                    animate={open ? { y: -5, rotate: -45 } : { y: 0, rotate: 0 }}
+                    className="absolute bottom-0 left-0 block h-[2px] w-full rounded-full bg-current"
+                    animate={open ? { y: -3.5, rotate: -45 } : { y: 0, rotate: 0 }}
                     transition={barSpring}
                   />
                 </span>
@@ -150,26 +150,30 @@ export function Navbar({ home }: { home: boolean }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-0 flex flex-col bg-bg px-5 pt-[104px] pb-[calc(24px+env(safe-area-inset-bottom))] md:hidden"
+              className="fixed inset-0 z-0 flex flex-col bg-bg px-5 pt-[92px] pb-[calc(24px+env(safe-area-inset-bottom))] md:hidden"
             >
-              <motion.ul variants={menuList} initial="closed" animate="open" className="flex flex-col gap-2">
-                {nav.map(({ label, href }) => (
-                  <motion.li key={href} variants={menuItem}>
+              <motion.ul variants={menuList} initial="closed" animate="open" className="flex flex-col">
+                {nav.map(({ label, href }, i) => (
+                  <motion.li key={href} variants={menuItem} className="border-b border-white/[0.06]">
                     <a
                       href={link(href)}
                       onClick={(event) => goTo(event, href)}
-                      className={`flex min-h-12 items-center rounded-[12px] text-[32px] leading-[1.1] font-bold tracking-[-0.03em] text-ink ${pressable}`}
+                      className={`flex items-center justify-between gap-4 rounded-[12px] py-[14px] text-[34px] leading-[1.1] font-bold tracking-[-0.035em] text-ink ${pressable}`}
                     >
                       {label}
+                      <span aria-hidden="true" className="text-[13px] font-medium tracking-normal text-subtle">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
                     </a>
                   </motion.li>
                 ))}
               </motion.ul>
-              <motion.div variants={menuItem} initial="closed" animate="open" className="mt-auto flex flex-col gap-4">
+              <motion.div variants={menuItem} initial="closed" animate="open" className="mt-auto flex flex-col gap-3">
+                <p className="text-[15px] text-muted">{mobileMenuCta.text}</p>
                 <a href={link(mobileMenuCta.href)} onClick={(event) => goTo(event, mobileMenuCta.href)} className={`${primaryButton} w-full`}>
                   {mobileMenuCta.label}
                 </a>
-                <a href={`mailto:${site.email}`} className="inline-flex min-h-11 items-center text-[15px] text-muted">
+                <a href={`mailto:${site.email}`} className="inline-flex min-h-11 items-center justify-center text-[15px] text-muted">
                   {site.email}
                 </a>
               </motion.div>

@@ -51,7 +51,7 @@ export const nav = [
   { label: "Contact", href: "#contact" },
 ];
 
-export const mobileMenuCta = { label: "Demander un devis", href: "#contact" };
+export const mobileMenuCta = { label: "Demander un devis", href: "#contact", text: "Un projet en tête ? Réponse sous 24 h." };
 
 export const primaryCta = { label: "Démarrer mon projet", href: "#formulaire" };
 
@@ -89,12 +89,32 @@ export const about = {
     { title: "Réactif", text: "Réponse sous 24 h" },
     { title: "Exigeant", text: "Rien au hasard" },
   ],
+  role: "Développeur web freelance · formé à l’IUT de Blois",
+  textShort: "Je conçois chaque site comme un produit : une idée claire, une exécution précise, aucun détail laissé au hasard.",
+  stats: [
+    { value: "24 h", label: "pour répondre" },
+    { value: "1", label: "interlocuteur" },
+    { value: "Visio", label: "ou près de Blois" },
+  ],
 };
 
 export const contactSection = {
   titleLines: ["Parlons de", "votre projet"],
   text: "Racontez-moi votre projet, même s’il n’est pas encore totalement défini. Réponse sous 24 h, sans jargon et sans engagement.",
-  needs: ["Site vitrine", "Boutique en ligne", "Réservation", "Espace client", "Outil sur mesure", "Maintenance"],
+  textShort: "Même s’il n’est pas encore totalement défini. Réponse sous 24 h, sans jargon et sans engagement.",
+  needsLegend: "De quoi avez-vous besoin ?",
+  needsLegendShort: "Votre projet",
+  needs: [
+    { label: "Site vitrine", short: "Site vitrine" },
+    { label: "Boutique en ligne", short: "Boutique" },
+    { label: "Réservation", short: "Réservation" },
+    { label: "Espace client", short: "Espace client" },
+    { label: "Outil sur mesure", short: "Sur mesure" },
+    { label: "Maintenance", short: "Maintenance" },
+  ],
+  placeholders: { nom: "Jean Dupont", email: "vous@exemple.fr", message: "Votre activité, ce que vous imaginez…" },
+  detailsToggle: "Ajouter des détails (facultatif)",
+  mobileNote: "Réponse sous 24 h",
   budgets: ["Moins de 2 000 €", "2 000 à 5 000 €", "Plus de 5 000 €"],
   endpoint: "/api/contact.php",
   success: { title: "Message envoyé", text: "Merci, je vous réponds sous 24 h à l’adresse indiquée." },
