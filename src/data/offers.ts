@@ -7,7 +7,11 @@ export type Offer = {
   badge?: string;
   /** Page service détaillée, liée depuis la carte de l'accueil. */
   page?: string;
+  /** Délai entre la validation du devis et la mise en ligne. */
+  delay?: string;
 };
+
+export const paymentTerms = "acompte de 20\u00a0% à la signature, solde à la livraison";
 
 export const offersIntro = {
   title: "Une offre claire",
@@ -22,6 +26,7 @@ export const offers: Offer[] = [
     text: "Pour être trouvé sur Google et contacté facilement.",
     points: ["Jusqu’à 5 pages, maquette incluse", "Responsive et rapide", "Référencement local de base", "Fiche Google Business"],
     page: "/creation-site-vitrine",
+    delay: "4 à 6 semaines",
   },
   {
     name: "Boutique en ligne",
@@ -31,6 +36,7 @@ export const offers: Offer[] = [
     points: ["Catalogue et paiement sécurisé", "Gestion des commandes", "Click and collect", "Formation à la prise en main"],
     badge: "Le plus demandé",
     page: "/creation-boutique-en-ligne",
+    delay: "6 à 10 semaines",
   },
   {
     name: "Sur mesure",
@@ -48,6 +54,8 @@ export type MaintenancePlan = {
   name: string;
   monthlyPrice: number;
   badge?: string;
+  /** Délai d'intervention en cas de panne, en heures ouvrées. */
+  interventionHours: number;
 };
 
 export type MaintenanceFeature = {
@@ -56,9 +64,9 @@ export type MaintenanceFeature = {
 };
 
 export const maintenancePlans: MaintenancePlan[] = [
-  { id: "essentiel", name: "Essentiel", monthlyPrice: 29 },
-  { id: "pro", name: "Pro", monthlyPrice: 59, badge: "Recommandé" },
-  { id: "serenite", name: "Sérénité", monthlyPrice: 119 },
+  { id: "essentiel", name: "Essentiel", monthlyPrice: 29, interventionHours: 72 },
+  { id: "pro", name: "Pro", monthlyPrice: 59, badge: "Recommandé", interventionHours: 48 },
+  { id: "serenite", name: "Sérénité", monthlyPrice: 119, interventionHours: 24 },
 ];
 
 export const maintenanceFeatures: MaintenanceFeature[] = [
@@ -83,6 +91,8 @@ export const maintenance = {
   text: "Hébergement, sécurité et modifications",
   priceLabel: `dès ${maintenanceFrom} €/mois`,
   toggleLabel: "Comparer les formules",
+  /** Tarif des modifications au-delà du temps inclus. */
+  extraHourlyRate: 60,
   page: "/maintenance-site-web",
   pageLabel: "Tout sur la maintenance",
   perMonth: "/mois",

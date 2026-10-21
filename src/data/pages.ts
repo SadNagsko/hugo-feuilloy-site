@@ -1,4 +1,4 @@
-import { maintenance, maintenanceFeatures, maintenancePlans, offers, type Offer, type PlanId } from "./offers.ts";
+import { maintenance, maintenanceFeatures, maintenancePlans, offers, paymentTerms, type Offer, type PlanId } from "./offers.ts";
 
 // Pages de contenu (services, page locale, étude de cas, article), pré-rendues comme l'accueil.
 // Liens internes dans le texte : [libellé](/chemin). Toute info manquante est marquée TODO_HUGO.
@@ -66,6 +66,7 @@ const essentiel = plan("essentiel");
 const pro = plan("pro");
 const serenite = plan("serenite");
 const monthly = (id: PlanId) => `${plan(id).monthlyPrice} €${maintenance.perMonth}`;
+const intervention = (id: PlanId) => `${plan(id).interventionHours} h ouvrées`;
 
 export const ctaLabel = "Démarrer mon projet";
 export const ctaHref = "/#contact";
@@ -117,9 +118,18 @@ const vitrinePage: ServicePageData = {
         },
         {
           type: "p",
-          text: "Le référencement local de base et la fiche Google Business vous aident à apparaître quand quelqu’un cherche votre activité près de chez lui.",
+          text: "Le référencement local de base vous aide à apparaître quand quelqu’un cherche votre activité près de chez lui. Concrètement, il comprend :",
         },
-        { type: "todo", text: "TODO_HUGO : préciser ce que comprend le « référencement local de base »." },
+        {
+          type: "list",
+          items: [
+            "des titres et des descriptions optimisés pour chaque page ;",
+            "des données structurées, qui aident Google à comprendre qui vous êtes et où vous êtes ;",
+            "un plan du site envoyé à Google ;",
+            "un site rapide et adapté au mobile, deux critères que Google prend en compte ;",
+            "votre fiche Google Business, créée ou optimisée.",
+          ],
+        },
       ],
     },
     {
@@ -134,7 +144,7 @@ const vitrinePage: ServicePageData = {
           withStatement: true,
           extra: [{ label: "04 · Mettre en ligne", text: "Le site est publié sur votre nom de domaine et vérifié sur ordinateur comme sur mobile." }],
         },
-        { type: "todo", text: "TODO_HUGO : indiquer le délai habituel entre la validation du devis et la mise en ligne d’un site vitrine." },
+        { type: "p", text: `Comptez ${vitrine.delay} entre la validation du devis et la mise en ligne.` },
       ],
     },
     {
@@ -157,7 +167,7 @@ const vitrinePage: ServicePageData = {
           type: "p",
           text: `Après la mise en ligne, l’hébergement et le suivi passent par une formule de [maintenance](${paths.maintenance}), ${maintenance.priceLabel}. Pour aller plus loin, j’ai détaillé [ce qui fait varier le prix d’un site vitrine](${paths.priceArticle}).`,
         },
-        { type: "todo", text: "TODO_HUGO : conditions de paiement (acompte, échéancier)." },
+        { type: "p", text: `Côté paiement : ${paymentTerms}.` },
       ],
     },
     {
@@ -170,7 +180,10 @@ const vitrinePage: ServicePageData = {
               question: "Je n’ai pas encore de textes ni de photos, est-ce un problème ?",
               answer: "Non. Dites-le dès le premier échange : on regarde ensemble ce que vous pouvez fournir et ce qu’il faut prévoir en plus dans le devis.",
             },
-            { question: "Pourrai-je modifier le site moi-même ?", answer: "TODO_HUGO : expliquer si le client peut modifier ses textes lui-même, et avec quel outil." },
+            {
+              question: "Pourrai-je modifier le site moi-même ?",
+              answer: `Les modifications de textes et de photos sont incluses dans les formules de [suivi](${paths.maintenance}) ${pro.name} et ${serenite.name} : vous m’envoyez la demande, je m’en occupe. Si vous préférez intervenir vous-même, un espace d’administration simple peut être ajouté sur demande.`,
+            },
             { question: "Le site m’appartient-il ?", answer: "Oui. Une fois livré, le site vous appartient entièrement." },
             {
               question: "Travaillez-vous seulement autour de Blois ?",
@@ -220,7 +233,7 @@ const boutiquePage: ServicePageData = {
           type: "p",
           text: "Le catalogue présente vos produits avec leurs photos, leurs prix et leur description. Vos clients paient en ligne, de façon sécurisée, sans quitter votre site.",
         },
-        { type: "todo", text: "TODO_HUGO : préciser la solution de paiement utilisée et les moyens de paiement acceptés." },
+        { type: "p", text: "Le paiement passe par Stripe : carte bancaire, Apple Pay et Google Pay. PayPal peut être ajouté sur demande." },
         { type: "p", text: "Les commandes arrivent dans un espace de gestion, où vous les suivez jusqu’au retrait ou à l’expédition." },
       ],
     },
@@ -231,8 +244,10 @@ const boutiquePage: ServicePageData = {
           type: "p",
           text: "Le click and collect est inclus : votre client commande et paie en ligne, puis vient chercher sa commande chez vous. Pour une clientèle proche, c’est souvent la façon la plus simple de démarrer.",
         },
-        { type: "p", text: "Si vous expédiez vos produits, la livraison est prévue dans la boutique, avec les options qui correspondent à votre activité." },
-        { type: "todo", text: "TODO_HUGO : indiquer comment sont gérés les frais de port et les transporteurs." },
+        {
+          type: "p",
+          text: "Si vous expédiez vos produits, Colissimo et Mondial Relay sont configurés, avec des frais de port calculés selon le poids de la commande. Le retrait sur place, lui, reste gratuit pour vos clients.",
+        },
       ],
     },
     {
@@ -242,7 +257,7 @@ const boutiquePage: ServicePageData = {
           type: "p",
           text: "Une boutique vit tous les jours. La formation à la prise en main est incluse : vous apprenez à ajouter un produit, modifier un prix et traiter une commande, pour ne pas dépendre de moi pour le quotidien.",
         },
-        { type: "todo", text: "TODO_HUGO : format de la formation (durée, sur place ou en visio, support fourni)." },
+        { type: "p", text: "La formation dure une heure, sur place près de Blois ou en visio, et vous repartez avec un guide PDF pour retrouver chaque manipulation." },
       ],
     },
     {
@@ -253,7 +268,7 @@ const boutiquePage: ServicePageData = {
           text: "Comme pour tous mes projets : une maquette d’abord, puis le développement, puis le suivi. Pour une boutique, la maquette sert surtout à valider le parcours d’achat, de la fiche produit jusqu’au paiement, sans étape inutile.",
         },
         { type: "p", text: "Avant l’ouverture, je passe des commandes de test pour vérifier chaque étape, du panier à la confirmation." },
-        { type: "todo", text: "TODO_HUGO : délai habituel de création d’une boutique en ligne." },
+        { type: "p", text: `Comptez ${boutique.delay} entre la validation du devis et l’ouverture de la boutique.` },
       ],
     },
     {
@@ -279,7 +294,10 @@ const boutiquePage: ServicePageData = {
               question: "Pourrai-je ajouter mes produits moi-même ?",
               answer: "Oui, c’est tout l’objet de la formation incluse. Si vous avez beaucoup de produits à mettre en ligne au départ, parlons-en au moment du devis.",
             },
-            { question: "J’ai déjà un site vitrine, faut-il tout refaire ?", answer: "TODO_HUGO : expliquer si une boutique peut s’ajouter à un site existant." },
+            {
+              question: "J’ai déjà un site vitrine, faut-il tout refaire ?",
+              answer: "Pas forcément. Si la technique de votre site le permet, la boutique s’y ajoute. Sinon, je vous propose une refonte complète, et je vous explique pourquoi avant tout devis.",
+            },
             {
               question: "Et si j’ai besoin d’un outil plus spécifique ?",
               answer: `Réservation, espace client, outil métier : c’est le rôle de l’offre ${surMesure.name}, ${surMesure.price.toLowerCase()}. Décrivez votre besoin dans le formulaire de contact.`,
@@ -345,7 +363,7 @@ const maintenancePage: ServicePageData = {
           text: `Nova est l’assistante que j’ai développée pour mon activité. Elle contrôle en continu la disponibilité de votre site, sa sécurité et l’état de ses mises à jour. La surveillance avec alertes est incluse à partir de la formule ${pro.name}.`,
         },
         { type: "p", text: "Nova prépare, je décide : chaque alerte et chaque rapport passe par moi avant d’arriver chez vous." },
-        { type: "todo", text: "TODO_HUGO : préciser la fréquence des contrôles de Nova." },
+        { type: "p", text: "Les contrôles ont lieu toutes les 5 minutes : disponibilité du site, erreurs, temps de réponse et validité du certificat HTTPS." },
       ],
     },
     {
@@ -355,7 +373,17 @@ const maintenancePage: ServicePageData = {
           type: "p",
           text: `Avec la formule ${serenite.name}, vous recevez chaque mois un rapport sur votre site. Nova le prépare à partir de ce qu’elle a observé pendant le mois, et je le relis avant de vous l’envoyer.`,
         },
-        { type: "todo", text: "TODO_HUGO : détailler le contenu du rapport mensuel (disponibilité, mises à jour faites, modifications réalisées…)." },
+        { type: "p", text: "Il contient :" },
+        {
+          type: "list",
+          items: [
+            "le taux de disponibilité du site sur le mois ;",
+            "le temps de réponse moyen ;",
+            "les incidents éventuels et leur durée ;",
+            "les interventions réalisées ;",
+            "mes recommandations pour la suite.",
+          ],
+        },
       ],
     },
     {
@@ -365,8 +393,11 @@ const maintenancePage: ServicePageData = {
           type: "p",
           text: `Si votre site ne répond plus, l’alerte m’arrive directement avec les formules ${pro.name} et ${serenite.name}, et j’interviens pour le remettre en ligne. Les sauvegardes, présentes dans toutes les formules, permettent de revenir à une version saine si nécessaire.`,
         },
-        { type: "todo", text: "TODO_HUGO : délai d’intervention en cas de panne, par formule." },
-        { type: "todo", text: "TODO_HUGO : fréquence des sauvegardes et durée de conservation." },
+        {
+          type: "p",
+          text: `Le délai d’intervention dépend de la formule : sous ${intervention("essentiel")} en ${essentiel.name}, sous ${intervention("pro")} en ${pro.name} et sous ${intervention("serenite")} en ${serenite.name}.`,
+        },
+        { type: "p", text: "Les sauvegardes sont quotidiennes et conservées 30 jours." },
       ],
     },
     {
@@ -376,14 +407,14 @@ const maintenancePage: ServicePageData = {
           type: "p",
           text: `Un horaire à changer, une photo à remplacer, un paragraphe à mettre à jour : la formule ${pro.name} inclut ${included("Modifications incluses", "pro")} de modifications, la formule ${serenite.name} ${included("Modifications incluses", "serenite")}. Vous m’envoyez votre demande, je m’en occupe.`,
         },
-        { type: "todo", text: "TODO_HUGO : ce qui se passe pour le temps non utilisé, et le tarif au-delà du temps inclus." },
+        { type: "p", text: `Le temps non utilisé n’est pas reporté d’un mois sur l’autre. Au-delà du temps inclus, les modifications sont facturées ${maintenance.extraHourlyRate} €/h.` },
       ],
     },
     {
       title: "Résiliation",
       blocks: [
-        { type: "p", text: `${maintenance.note} Vous restez libre de changer de formule ou d’arrêter quand vous le souhaitez.` },
-        { type: "todo", text: "TODO_HUGO : préavis éventuel, et ce que vous récupérez en partant (fichiers du site, transfert du nom de domaine)." },
+        { type: "p", text: `${maintenance.note} Il suffit de prévenir un mois à l’avance.` },
+        { type: "p", text: "En partant, vous récupérez tous les fichiers de votre site, et le transfert du nom de domaine est gratuit." },
       ],
     },
     {
@@ -392,7 +423,10 @@ const maintenancePage: ServicePageData = {
         {
           type: "faq",
           items: [
-            { question: "Mon site n’a pas été créé par vous. Pouvez-vous le maintenir ?", answer: "TODO_HUGO : préciser si vous reprenez des sites existants, et à quelles conditions." },
+            {
+              question: "Mon site n’a pas été créé par vous. Pouvez-vous le maintenir ?",
+              answer: "Oui, après un audit gratuit, si la technologie du site le permet. Certains sites ne peuvent pas être transférés : un site Wix, par exemple, ne peut être que refait.",
+            },
             {
               question: "Quelle formule choisir ?",
               answer: `Si votre site change rarement, ${essentiel.name} suffit. Si vous encaissez des paiements ou voulez être alerté au moindre problème, partez sur ${pro.name}. ${serenite.name} convient si vous modifiez souvent votre site et voulez un suivi mensuel.`,
@@ -435,7 +469,7 @@ const bloisPage: CityPageData = {
           type: "p",
           text: "Le premier échange peut se faire autour d’un café à Blois, ou en visio si c’est plus simple pour vous. Les points d’étape suivent la même logique : en personne quand c’est utile, à distance quand ça vous fait gagner du temps.",
         },
-        { type: "todo", text: "TODO_HUGO : préciser si vous vous déplacez chez le client, et dans quel rayon autour de Contres." },
+        { type: "p", text: "Je me déplace aussi chez vous, dans un rayon de 30 km autour de Contres. Au-delà, on se retrouve en visio." },
       ],
     },
     {
@@ -609,10 +643,9 @@ const priceArticle: ArticlePageData = {
             { title: "Les mises à jour et la sécurité", text: "Un site qu’on n’entretient pas devient vulnérable avec le temps, même s’il fonctionne bien le jour de sa mise en ligne." },
           ],
         },
-        { type: "todo", text: "TODO_HUGO : préciser si le prix du nom de domaine est compris dans les formules de maintenance ou facturé à part." },
         {
           type: "p",
-          text: `Chez moi, ces postes sont regroupés dans les formules de [maintenance](${paths.maintenance}), ${maintenance.priceLabel} et sans engagement. La formule ${essentiel.name} couvre l’hébergement, la gestion du nom de domaine et les sauvegardes ; les mises à jour de sécurité commencent avec la formule ${pro.name}.`,
+          text: `Chez moi, ces postes sont regroupés dans les formules de [maintenance](${paths.maintenance}), ${maintenance.priceLabel} et sans engagement. Le renouvellement d’un nom de domaine en .fr est inclus dans toutes les formules. La formule ${essentiel.name} couvre l’hébergement, la gestion du nom de domaine et les sauvegardes ; les mises à jour de sécurité commencent avec la formule ${pro.name}.`,
         },
       ],
     },
