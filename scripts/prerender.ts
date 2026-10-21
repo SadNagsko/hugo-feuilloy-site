@@ -8,12 +8,12 @@ const root = join(import.meta.dirname, "..");
 const dist = join(root, "dist");
 const ssrDir = join(root, "dist-ssr");
 
-const { render, routes, site } = (await import(join(ssrDir, "entry-server.js"))) as ServerEntry;
+const { render, routeHead, routes, site } = (await import(join(ssrDir, "entry-server.js"))) as ServerEntry;
 const template = readFileSync(join(dist, "index.html"), "utf8");
 const pageUrl = (path: string) => `${site.url}${path === "/" ? "/" : path}`;
 
 for (const route of routes) {
-  const html = applyPageMeta(template, { title: route.title, description: route.description, url: pageUrl(route.path) }).replace(
+  const html = applyPageMeta(template, { title: route.title, description: route.description, url: pageUrl(route.path), head: routeHead(route.path) }).replace(
     '<div id="root"></div>',
     `<div id="root">${render(route.path)}</div>`,
   );
@@ -25,9 +25,13 @@ for (const route of routes) {
   console.log(`prerendered ${route.path}`);
 }
 
+const lastmod = new Date().toISOString().slice(0, 10);
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${routes.map((route) => `  <url><loc>${pageUrl(route.path)}</loc></url>`).join("\n")}
+${routes
+  .filter((route) => route.indexable)
+  .map((route) => `  <url><loc>${pageUrl(route.path)}</loc><lastmod>${lastmod}</lastmod></url>`)
+  .join("\n")}
 </urlset>
 `;
 writeFileSync(join(dist, "sitemap.xml"), sitemap);

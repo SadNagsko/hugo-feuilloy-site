@@ -67,7 +67,7 @@ function ProjectCard({ project }: { project: Project }) {
   const { theme, url } = project;
   const hoverable = Boolean(url) && !reduceMotion;
 
-  const cardClass = `flex flex-wrap items-center gap-12 rounded-[32px] p-6 sm:p-10 lg:p-14 max-md:flex-col max-md:flex-nowrap max-md:items-stretch max-md:gap-6 max-md:rounded-[24px] max-md:p-6 ${project.reversed ? "flex-row-reverse" : ""}`;
+  const cardClass = `flex flex-wrap items-center gap-12 rounded-[32px] p-6 sm:p-10 lg:p-14 max-md:flex-col max-md:flex-nowrap max-md:items-stretch max-md:gap-0 max-md:rounded-[24px] max-md:p-6 ${project.reversed ? "flex-row-reverse" : ""}`;
   const cardStyle = {
     backgroundColor: theme.background,
     color: theme.text,
@@ -76,7 +76,7 @@ function ProjectCard({ project }: { project: Project }) {
 
   const content = (
     <>
-      <div className="min-w-0 flex-[1_1_300px] max-md:flex-none">
+      <div className="min-w-0 flex-[1_1_300px] max-md:contents">
         <p className="text-[14px] font-medium max-md:text-[13px]" style={{ color: theme.label }}>
           {project.label}
         </p>
@@ -84,10 +84,10 @@ function ProjectCard({ project }: { project: Project }) {
         <p className={`mt-5 text-[18px] leading-[1.5] max-md:mt-4 max-md:text-[16px]`} style={{ color: theme.muted }}>
           {project.description}
         </p>
-        {url && <ProjectLink label={project.linkLabel} color={theme.link} className="mt-7 max-md:hidden" />}
+        {url && <ProjectLink label={project.linkLabel} color={theme.link} className="mt-7 max-md:order-1 max-md:mt-4 max-md:self-start" />}
       </div>
 
-      <div className="relative h-[300px] min-w-0 flex-[2_1_520px] sm:h-[380px] max-md:aspect-[16/10] max-md:h-auto max-md:flex-none">
+      <div className="relative h-[300px] min-w-0 flex-[2_1_520px] sm:h-[380px] max-md:mt-6 max-md:aspect-[16/10] max-md:h-auto max-md:flex-none">
         <motion.div
           variants={hoverable ? { hover: { scale: 1.02 } } : undefined}
           transition={hoverSpring}
@@ -105,7 +105,6 @@ function ProjectCard({ project }: { project: Project }) {
           </div>
         </motion.div>
       </div>
-      {url && <ProjectLink label={project.linkLabel} color={theme.link} className="-mt-2 md:hidden" />}
     </>
   );
 
@@ -134,7 +133,7 @@ function ProjectCard({ project }: { project: Project }) {
 
 export function Projects() {
   return (
-    <section id="realisations" className="py-24 md:py-[160px]">
+    <section id="realisations" className="py-24 max-md:pt-12 md:py-[160px]">
       <Container>
         <Reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-5 max-md:flex-col max-md:items-center max-md:text-center">
           <h2 className="text-[clamp(44px,5.6vw,80px)] leading-[0.96] font-bold tracking-[-0.05em]">

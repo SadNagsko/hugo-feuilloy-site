@@ -50,11 +50,11 @@ export function Hero() {
   return (
     <section data-hero className="flex min-h-[calc(100svh-70px)] flex-col max-md:min-h-[calc(100svh-72px)]">
       <Container className="flex flex-1 flex-col items-center justify-center gap-[34px] py-20 text-center">
-        <motion.p {...enter(0)} className="text-[15px] text-muted max-md:text-[14px]">
-          {hero.eyebrow}
-        </motion.p>
+        <motion.h1 {...enter(0)} className="text-[15px] font-normal text-muted max-md:text-[14px]">
+          {hero.heading}
+        </motion.h1>
 
-        <h1 className="w-full text-[clamp(56px,9.4vw,148px)] leading-[0.94] font-bold tracking-[-0.055em] max-md:text-[58px] max-[379.98px]:text-[54px]">
+        <p className="w-full text-[clamp(56px,9.4vw,148px)] leading-[0.94] font-bold tracking-[-0.055em] max-md:text-[58px] max-md:text-balance max-[379.98px]:text-[54px]">
           <span className="sr-only">
             {hero.lead} {allWords}.
           </span>
@@ -82,11 +82,11 @@ export function Hero() {
               </motion.span>
             </span>
           </span>
-        </h1>
+        </p>
 
         <motion.p {...enter(2)} className={`max-w-[600px] text-[19px] leading-[1.45] text-muted sm:text-[21px] max-md:text-balance ${mobileText}`}>
-          <span className="max-md:hidden">{hero.text}</span>
-          <span className="md:hidden">{hero.textShort}</span>
+          <span className="max-md:hidden">{hero.textLead}</span>
+          <span className="max-md:block max-md:first-letter:uppercase">{hero.text}</span>
         </motion.p>
 
         <motion.div {...enter(3)} className="flex flex-col items-center gap-x-8 gap-y-4 sm:flex-row max-md:w-full max-md:flex-col max-md:items-center max-md:gap-y-2">
@@ -102,16 +102,15 @@ export function Hero() {
 
       <div className="border-t border-white/[0.07]">
         <Container>
-          <ul className="grid grid-cols-2 gap-x-6 gap-y-3 py-6 text-[14px] text-muted max-md:hidden md:grid-cols-4 md:text-center">
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-3 py-6 text-[14px] text-muted max-md:gap-x-4 md:grid-cols-4 md:text-center">
             {hero.proof.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-3 py-6 text-[14px] text-muted md:hidden">
-            {hero.proofShort.map((item) => (
-              <li key={item} className="flex items-center justify-center gap-2 text-center">
-                <span aria-hidden="true" className="size-1 shrink-0 rounded-full bg-violet" />
-                {item}
+              <li
+                key={item.text}
+                className={`max-md:flex max-md:items-center max-md:justify-center max-md:gap-2 max-md:text-center ${item.only === "mobile" ? "md:hidden" : ""} ${item.only === "desktop" ? "max-md:hidden" : ""}`}
+              >
+                <span aria-hidden="true" className="size-1 shrink-0 rounded-full bg-violet md:hidden" />
+                {item.text}
+                {item.desktopSuffix && <span className="max-md:hidden">{item.desktopSuffix}</span>}
               </li>
             ))}
           </ul>

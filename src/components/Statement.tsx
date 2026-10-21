@@ -81,10 +81,12 @@ function MobileStatement() {
   );
 }
 
-function Steps({ visible, animated }: { visible: boolean; animated: boolean }) {
+type StepItem = { label: string; text: string };
+
+export function Steps({ visible, animated, items = statement.steps }: { visible: boolean; animated: boolean; items?: StepItem[] }) {
   return (
     <ol className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-x-8 gap-y-6 md:gap-y-10">
-      {statement.steps.map((step, i) => (
+      {items.map((step, i) => (
         <motion.li
           key={step.label}
           className="border-t border-white/[0.12] pt-4 md:pt-6"

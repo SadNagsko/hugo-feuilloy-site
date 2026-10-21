@@ -70,6 +70,11 @@ export const maintenanceFeatures: MaintenanceFeature[] = [
 
 export const maintenanceFrom = Math.min(...maintenancePlans.map((plan) => plan.monthlyPrice));
 
+export const monitoring = {
+  title: "Vos sites, surveillés par Nova",
+  text: "Nova, c’est l’assistante que j’ai développée pour mon activité. Elle contrôle en continu la disponibilité, la sécurité et les mises à jour de vos sites, et prépare votre rapport mensuel. Je vérifie tout avant envoi.",
+};
+
 export const maintenance = {
   text: "Hébergement, sécurité et modifications",
   priceLabel: `dès ${maintenanceFrom} €/mois`,

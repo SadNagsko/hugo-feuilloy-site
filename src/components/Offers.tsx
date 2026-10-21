@@ -4,6 +4,7 @@ import {
   maintenance,
   maintenanceFeatures,
   maintenancePlans,
+  monitoring,
   offers,
   offersIntro,
   type MaintenanceFeature,
@@ -83,7 +84,7 @@ function ComparisonTable() {
   const highlight = (plan: MaintenancePlan) => (plan.badge ? "border-x border-violet/30 bg-violet/[0.06]" : "");
 
   return (
-    <table className="hidden w-full border-separate border-spacing-0 text-[15px] md:table">
+    <table className="w-full border-separate border-spacing-0 text-[15px]">
       <caption className="sr-only">Comparatif des formules de suivi</caption>
       <thead>
         <tr>
@@ -127,7 +128,7 @@ function ComparisonTable() {
 
 function ComparisonCards() {
   return (
-    <ul className="flex flex-col gap-3 md:hidden">
+    <ul className="flex flex-col gap-3">
       {maintenancePlans.map((plan) => (
         <li key={plan.id} className={`rounded-[22px] border bg-bg-deep p-6 ${plan.badge ? "border-violet/40" : "border-white/[0.07]"}`}>
           <div className="flex items-center justify-between gap-3">
@@ -242,6 +243,16 @@ export function Offers() {
         </div>
 
         <Reveal className="mt-5">
+          <div className="rounded-[22px] border border-white/[0.07] bg-surface px-6 py-6 sm:px-8 sm:py-7 max-md:rounded-[20px] max-md:p-5">
+            <h3 className="text-[20px] leading-[1.2] font-semibold tracking-[-0.02em] sm:text-[22px]">
+              {monitoring.title}
+              <Dot />
+            </h3>
+            <p className={`mt-3 max-w-[760px] text-[17px] leading-[1.5] text-muted ${mobileText}`}>{monitoring.text}</p>
+          </div>
+        </Reveal>
+
+        <Reveal className="mt-3">
           <div className="rounded-[22px] border border-white/[0.07] bg-surface max-md:rounded-[20px]">
             <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 px-6 py-4 sm:px-8 max-md:p-5">
               <p className="text-[17px] leading-[1.45]">
@@ -278,10 +289,13 @@ export function Offers() {
                   className="overflow-hidden"
                 >
                   <div className="border-t border-white/[0.07] px-4 pt-2 pb-6 sm:px-8">
-                    <ComparisonTable />
-                    <div className="pt-4 md:hidden">
-                      <ComparisonCards />
-                    </div>
+                    {carousel.isMobile ? (
+                      <div className="pt-4">
+                        <ComparisonCards />
+                      </div>
+                    ) : (
+                      <ComparisonTable />
+                    )}
                     <p className="mt-6 text-[13px] leading-[1.45] text-muted">{maintenance.note}</p>
                   </div>
                 </motion.div>

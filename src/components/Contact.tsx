@@ -358,8 +358,8 @@ export function Contact() {
               </span>
             </h2>
             <p className={`mx-auto mt-7 max-w-[520px] text-[19px] leading-[1.45] text-muted lg:mx-0 max-md:mt-5 max-md:text-balance ${mobileText}`}>
-              <span className="max-md:hidden">{contactSection.text}</span>
-              <span className="md:hidden">{contactSection.textShort}</span>
+              <span className="max-md:hidden">{contactSection.textLead}</span>
+              <span className="max-md:block max-md:first-letter:uppercase">{contactSection.text}</span>
             </p>
             <div className="mt-8 flex flex-col items-center gap-2 lg:items-start max-md:mt-6 max-md:gap-0">
               <a href={`mailto:${site.email}`} className="text-[24px] font-semibold tracking-[-0.02em] break-all max-md:text-[20px] underline decoration-white/20 underline-offset-[6px] hover:decoration-violet-soft">

@@ -10,10 +10,21 @@ export const site = {
   area: "Blois, France",
   portrait: "/hugo.webp",
   seo: {
-    title: "Hugo Feuilloy · Développeur web freelance – Blois et toute la France",
+    title: "Développeur web freelance à Blois · Hugo Feuilloy",
     description:
-      "Développeur web freelance basé près de Blois. Sites vitrines, boutiques en ligne et outils sur mesure pour les entreprises de toute la France.",
+      "Création de sites web à Blois et partout en France : sites vitrines, boutiques en ligne et outils sur mesure. Développeur web freelance.",
   },
+  address: { locality: "Contres", postalCode: "41700", region: "Centre-Val de Loire", country: "FR" },
+  areaServed: [
+    { type: "City", name: "Blois" },
+    { type: "City", name: "Tours" },
+    { type: "City", name: "Orléans" },
+    { type: "AdministrativeArea", name: "Loir-et-Cher" },
+    { type: "Country", name: "France" },
+  ],
+  school: "IUT de Blois",
+  // URLs des profils publics, à compléter. Une valeur vide est ignorée.
+  social: { linkedin: "", instagram: "", malt: "" },
   links: {
     legal: "/mentions-legales",
     privacy: "/confidentialite",
@@ -21,14 +32,16 @@ export const site = {
 };
 
 export const routes = [
-  { path: "/", title: site.seo.title, description: site.seo.description },
+  { path: "/", title: site.seo.title, description: site.seo.description, indexable: true },
   {
     path: site.links.legal,
+    indexable: false,
     title: "Mentions légales · Hugo Feuilloy",
     description: "Mentions légales du site de Hugo Feuilloy, développeur web freelance basé près de Blois.",
   },
   {
     path: site.links.privacy,
+    indexable: false,
     title: "Politique de confidentialité · Hugo Feuilloy",
     description: "Quelles données sont collectées sur le site de Hugo Feuilloy, pourquoi, combien de temps, et comment exercer vos droits.",
   },
@@ -56,15 +69,21 @@ export const mobileMenuCta = { label: "Demander un devis", href: "#contact", tex
 export const primaryCta = { label: "Démarrer mon projet", href: "#formulaire" };
 
 export const hero = {
-  eyebrow: "Développeur web freelance · Partout en France",
+  heading: "Développeur web freelance à Blois",
   lead: "Des sites qui",
   words: ["vendent", "rassurent", "durent", "marquent", "travaillent"],
   intervalMs: 2800,
-  text: "Commerces, indépendants, associations ou PME : sites vitrines, boutiques en ligne et outils sur mesure, finis jusqu’au dernier pixel.",
-  textShort: "Sites vitrines, boutiques en ligne et outils sur mesure, finis jusqu’au dernier pixel.",
+  // Le début de phrase est masqué en mobile, la suite prend alors une majuscule.
+  textLead: "Commerces, indépendants, associations ou PME : ",
+  text: "sites vitrines, boutiques en ligne et outils sur mesure, finis jusqu’au dernier pixel.",
   secondary: { label: "Voir les réalisations", href: "#realisations" },
-  proofShort: ["Basé près de Blois", "Partout en France", "Réponse sous 24 h", `Suivi ${maintenance.priceLabel}`],
-  proof: ["Basé près de Blois, partout en France", "Un seul interlocuteur", "Réponse sous 24 h", `Suivi ${maintenance.priceLabel}`],
+  proof: [
+    { text: "Basé près de Blois", desktopSuffix: ", partout en France" },
+    { text: "Partout en France", only: "mobile" },
+    { text: "Un seul interlocuteur", only: "desktop" },
+    { text: "Réponse sous 24 h" },
+    { text: `Suivi ${maintenance.priceLabel}` },
+  ] as { text: string; desktopSuffix?: string; only?: "mobile" | "desktop" }[],
 };
 
 export const statement = {
@@ -81,27 +100,41 @@ export const statement = {
   ],
 };
 
+export const approach = {
+  id: "facon-de-travailler",
+  label: "Ma façon de travailler",
+  title: "Je travaille avec l’IA. Et je l’assume",
+  text: "Elle m’aide à aller plus vite sur ce qui est répétitif, pour passer plus de temps sur ce qui compte : comprendre votre métier, soigner le design, tester chaque détail.",
+  points: [
+    { label: "Plus rapide", text: "Des délais plus courts, sans rogner sur la qualité." },
+    { label: "Plus juste", text: "Vous payez la réflexion et le résultat, pas des heures de saisie." },
+    { label: "Toujours maîtrisé", text: "Chaque ligne est relue, comprise et testée. L’IA propose, je décide." },
+  ],
+  faq: {
+    question: "Utilisez-vous l’intelligence artificielle ?",
+    answer:
+      "Oui, comme outil de travail, au même titre qu’un éditeur de code. Elle me fait gagner du temps sur les tâches techniques répétitives. La conception, les choix et la relecture restent faits par moi, et le site livré vous appartient entièrement.",
+  },
+};
+
 export const about = {
   title: "Moi, c’est Hugo",
-  text: "Développeur web formé à l’IUT de Blois. Je conçois chaque site comme un produit : une idée claire, une exécution précise, et aucun détail laissé au hasard.",
-  traits: [
-    { title: "Proche ou à distance", text: "Près de Blois ou en visio" },
-    { title: "Réactif", text: "Réponse sous 24 h" },
-    { title: "Exigeant", text: "Rien au hasard" },
-  ],
   role: "Développeur web freelance · formé à l’IUT de Blois",
-  textShort: "Je conçois chaque site comme un produit : une idée claire, une exécution précise, aucun détail laissé au hasard.",
-  stats: [
-    { value: "24 h", label: "pour répondre" },
-    { value: "1", label: "interlocuteur" },
-    { value: "Visio", label: "ou près de Blois" },
+  // Le début de phrase est masqué en mobile, où le rôle est affiché juste au-dessus.
+  textLead: "Développeur web formé à l’IUT de Blois. ",
+  text: "Je conçois chaque site comme un produit : une idée claire, une exécution précise, et aucun détail laissé au hasard.",
+  traits: [
+    { title: "24 h", text: "pour répondre" },
+    { title: "1", text: "interlocuteur" },
+    { title: "Visio", text: "ou près de Blois" },
   ],
 };
 
 export const contactSection = {
   titleLines: ["Parlons de", "votre projet"],
-  text: "Racontez-moi votre projet, même s’il n’est pas encore totalement défini. Réponse sous 24 h, sans jargon et sans engagement.",
-  textShort: "Même s’il n’est pas encore totalement défini. Réponse sous 24 h, sans jargon et sans engagement.",
+  // Le début de phrase est masqué en mobile, la suite prend alors une majuscule.
+  textLead: "Racontez-moi votre projet, ",
+  text: "même s’il n’est pas encore totalement défini. Réponse sous 24 h, sans jargon et sans engagement.",
   needsLegend: "De quoi avez-vous besoin ?",
   needsLegendShort: "Votre projet",
   needs: [
