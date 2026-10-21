@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 import { about, site } from "../data/site";
-import { Container, Dot, springIn, useImageStatus, useReducedMotionSafe } from "./primitives";
+import { Container, Dot, springIn, useImageStatus } from "./primitives";
 import { Reveal } from "./Reveal";
 
 function Portrait() {
@@ -26,8 +26,6 @@ function Portrait() {
 }
 
 export function About() {
-  const reduceMotion = useReducedMotionSafe();
-
   return (
     <section id="a-propos" className="py-[110px] md:py-[160px]">
       <Container className="flex flex-wrap items-center gap-[72px]">
@@ -45,7 +43,7 @@ export function About() {
               <motion.li
                 key={trait.title}
                 className="border-t border-white/[0.12] pt-5"
-                initial={reduceMotion ? false : { opacity: 0, y: 40 }}
+                initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0, transition: { ...springIn, delay: 0.2 + i * 0.09 } }}
                 viewport={{ once: true, amount: 0.5 }}
               >

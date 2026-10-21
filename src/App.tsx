@@ -1,3 +1,4 @@
+import { MotionConfig } from "motion/react";
 import { Footer } from "./components/Footer";
 import { Navbar } from "./components/Navbar";
 import { legalNotice, privacyPolicy } from "./data/legal";
@@ -16,12 +17,14 @@ export default function App({ path }: { path: RoutePath }) {
   useLenis();
 
   return (
-    <div id="top">
-      <Navbar home={path === "/"} />
-      <main>
-        <Page path={path} />
-      </main>
-      <Footer />
-    </div>
+    <MotionConfig reducedMotion="user">
+      <div id="top">
+        <Navbar home={path === "/"} />
+        <main>
+          <Page path={path} />
+        </main>
+        <Footer />
+      </div>
+    </MotionConfig>
   );
 }

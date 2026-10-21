@@ -31,17 +31,19 @@ export function Hero() {
   const reduceMotion = useReducedMotionSafe();
   const [entered, setEntered] = useState(false);
   const index = useRotatingIndex(hero.words.length, hero.intervalMs, !reduceMotion && entered);
-  const word = reduceMotion ? hero.words[hero.words.length - 1] : hero.words[index];
+  const word = hero.words[index];
 
-  const enter = (step: number) =>
-    reduceMotion
-      ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4, delay: ENTRANCE_DELAYS[step] } }
-      : { initial: { opacity: 0, y: 24 }, animate: { opacity: 1, y: 0 }, transition: { duration: 0.9, ease: EASE, delay: ENTRANCE_DELAYS[step] } };
+  const enter = (step: number) => ({
+    initial: { opacity: 0, y: 24 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.9, ease: EASE, delay: ENTRANCE_DELAYS[step] },
+  });
 
-  const line = (step: number) =>
-    reduceMotion
-      ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.4, delay: ENTRANCE_DELAYS[1] } }
-      : { initial: { y: "100%" }, animate: { y: "0%" }, transition: { duration: 0.8, ease: EASE, delay: ENTRANCE_DELAYS[1] + step * LINE_STAGGER } };
+  const line = (step: number) => ({
+    initial: { y: "100%" },
+    animate: { y: "0%" },
+    transition: { duration: 0.8, ease: EASE, delay: ENTRANCE_DELAYS[1] + step * LINE_STAGGER },
+  });
 
   const allWords = `${hero.words.slice(0, -1).join(", ")} et ${hero.words[hero.words.length - 1]}`;
 
@@ -68,9 +70,9 @@ export function Hero() {
                   <motion.span
                     key={word}
                     className="inline-block"
-                    initial={reduceMotion ? { opacity: 0 } : { opacity: 0, y: "0.3em", filter: "blur(12px)" }}
-                    animate={reduceMotion ? { opacity: 1 } : { opacity: 1, y: "0em", filter: "blur(0px)" }}
-                    exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: "-0.2em", transition: { duration: 0.35, ease: EASE } }}
+                    initial={{ opacity: 0, y: "0.3em", filter: "blur(12px)" }}
+                    animate={{ opacity: 1, y: "0em", filter: "blur(0px)" }}
+                    exit={{ opacity: 0, y: "-0.2em", transition: { duration: 0.35, ease: EASE } }}
                     transition={{ duration: 0.7, ease: EASE }}
                   >
                     {word}

@@ -15,14 +15,12 @@ import { Reveal } from "./Reveal";
 
 function OfferCard({ offer, index }: { offer: Offer; index: number }) {
   const reduceMotion = useReducedMotionSafe();
-  const motionProps = reduceMotion
-    ? {}
-    : {
-        initial: { opacity: 0, y: 40 },
-        whileInView: { opacity: 1, y: 0, transition: { ...springIn, delay: index * 0.09 } },
-        whileHover: { y: -4, transition: { type: "spring" as const, bounce: 0, duration: 0.35 } },
-        viewport: { once: true, amount: 0.3 },
-      };
+  const motionProps = {
+    initial: { opacity: 0, y: 40 },
+    whileInView: { opacity: 1, y: 0, transition: { ...springIn, delay: index * 0.09 } },
+    whileHover: reduceMotion ? undefined : { y: -4, transition: { type: "spring" as const, bounce: 0, duration: 0.35 } },
+    viewport: { once: true, amount: 0.3 },
+  };
 
   return (
     <motion.article

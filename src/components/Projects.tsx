@@ -104,7 +104,7 @@ function ProjectCard({ project }: { project: Project }) {
   );
 
   return (
-    <motion.div ref={ref} style={reduceMotion ? undefined : { scale, opacity }}>
+    <motion.div ref={ref} style={reduceMotion ? { scale: 1, opacity: 1 } : { scale, opacity }}>
       {url ? (
         <motion.a
           href={url}

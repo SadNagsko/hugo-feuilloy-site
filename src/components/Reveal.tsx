@@ -1,5 +1,4 @@
 import { motion } from "motion/react";
-import { useReducedMotionSafe } from "./primitives";
 
 type RevealProps = {
   children: React.ReactNode;
@@ -8,10 +7,6 @@ type RevealProps = {
 };
 
 export function Reveal({ children, className, delay = 0 }: RevealProps) {
-  const reduceMotion = useReducedMotionSafe();
-
-  if (reduceMotion) return <div className={className}>{children}</div>;
-
   return (
     <motion.div
       className={className}

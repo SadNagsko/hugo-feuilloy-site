@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion, type Variants } from "motion/react";
 import { contactSection, hasPhone, phoneHref, site } from "../data/site";
-import { Container, Dot, EASE, pressable, primaryButton, useReducedMotionSafe } from "./primitives";
+import { Container, Dot, EASE, pressable, primaryButton } from "./primitives";
 import { Reveal } from "./Reveal";
 
 type Status = "idle" | "sending" | "success" | "error";
@@ -53,7 +53,6 @@ function Field({ name, label, error, children }: FieldProps) {
 }
 
 function ContactForm() {
-  const reduceMotion = useReducedMotionSafe();
   const [needs, setNeeds] = useState<string[]>([]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [status, setStatus] = useState<Status>("idle");
@@ -129,7 +128,7 @@ function ContactForm() {
             onSubmit={onSubmit}
             exit={{ opacity: 0, transition: { duration: 0.2 } }}
             variants={list}
-            initial={reduceMotion ? false : "hidden"}
+            initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.15 }}
             className="flex flex-col gap-6"
