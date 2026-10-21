@@ -31,6 +31,7 @@ export const projects: Project[] = [
     label: "E-commerce · Contres",
     description: "Une miellerie artisanale qui vend désormais sa production en direct, sans intermédiaire.",
     linkLabel: "Voir le site",
+    url: "https://lesbellesdemoisailes.fr/",
     reversed: true,
     theme: {
       background: "#F7EEDB",
