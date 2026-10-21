@@ -13,7 +13,9 @@ const RATE_WINDOW_SECONDS = 3600;
 
 header('Content-Type: application/json; charset=utf-8');
 header('X-Content-Type-Options: nosniff');
-header('Cache-Control: no-store');
+header('X-Frame-Options: SAMEORIGIN');
+header("Content-Security-Policy: frame-ancestors 'self'");
+header('Cache-Control: no-cache, no-store, must-revalidate');
 
 function respond(int $status, array $payload): never
 {
