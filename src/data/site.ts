@@ -1,4 +1,5 @@
 import { maintenance } from "./offers.ts";
+import { contentPages } from "./pages.ts";
 
 export const site = {
   name: "Hugo Feuilloy",
@@ -31,8 +32,11 @@ export const site = {
   },
 };
 
-export const routes = [
+export type Route = { path: string; title: string; description: string; indexable: boolean };
+
+export const routes: Route[] = [
   { path: "/", title: site.seo.title, description: site.seo.description, indexable: true },
+  ...contentPages.map((page) => ({ path: page.path, title: page.title, description: page.description, indexable: true })),
   {
     path: site.links.legal,
     indexable: false,
@@ -45,9 +49,9 @@ export const routes = [
     title: "Politique de confidentialité · Hugo Feuilloy",
     description: "Quelles données sont collectées sur le site de Hugo Feuilloy, pourquoi, combien de temps, et comment exercer vos droits.",
   },
-] as const;
+];
 
-export type RoutePath = (typeof routes)[number]["path"];
+export type RoutePath = string;
 
 export function resolveRoute(pathname: string) {
   const normalized = pathname.replace(/\/+$/, "") || "/";

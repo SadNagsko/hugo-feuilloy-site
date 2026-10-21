@@ -1,7 +1,7 @@
 import { useRef, useSyncExternalStore } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { projects, projectsIntro, type ClientProject, type PersoProject, type Project } from "../data/projects";
-import { ArrowUpRight, Container, Dot, mobileText, useImageStatus, useIsMobile, useReducedMotionSafe } from "./primitives";
+import { ArrowUpRight, Chevron, Container, Dot, mobileText, useImageStatus, useIsMobile, useReducedMotionSafe } from "./primitives";
 import { NovaLive, type NovaLiveHandle } from "./NovaLive";
 import { Reveal } from "./Reveal";
 
@@ -47,11 +47,11 @@ function Shot({ src, alt, colors, variant }: ShotProps) {
   );
 }
 
-function ProjectLink({ label, color, className }: { label: string; color: string; className: string }) {
+function ProjectLink({ label, color, external, className }: { label: string; color: string; external?: boolean; className: string }) {
   return (
     <span className={`inline-flex min-h-11 items-center gap-1.5 text-[17px] font-semibold ${className}`} style={{ color }}>
       {label}
-      <ArrowUpRight className="size-4" />
+      {external ? <ArrowUpRight className="size-4" /> : <Chevron className="size-4" />}
     </span>
   );
 }
@@ -103,7 +103,7 @@ function ClientCard({ project }: { project: ClientProject }) {
         <p className={descriptionText} style={{ color: theme.muted }}>
           {project.description}
         </p>
-        {url && <ProjectLink label={project.linkLabel} color={theme.link} className="mt-7 max-md:order-1 max-md:mt-4 max-md:self-start" />}
+        {url && <ProjectLink label={project.linkLabel} color={theme.link} external={project.external} className="mt-7 max-md:order-1 max-md:mt-4 max-md:self-start" />}
       </div>
 
       <div className={visualZone}>
@@ -130,9 +130,8 @@ function ClientCard({ project }: { project: ClientProject }) {
   return url ? (
     <motion.a
       href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`${project.linkLabel} ${project.name} (nouvel onglet)`}
+      {...(project.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      aria-label={`${project.linkLabel} ${project.name}${project.external ? " (nouvel onglet)" : ""}`}
       whileHover={hoverable ? "hover" : undefined}
       style={cardStyle}
       className={`${cardClass} cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-violet max-md:transition-transform max-md:duration-[120ms] max-md:active:scale-[0.98]`}

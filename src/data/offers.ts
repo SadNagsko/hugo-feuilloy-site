@@ -5,6 +5,8 @@ export type Offer = {
   text: string;
   points: string[];
   badge?: string;
+  /** Page service détaillée, liée depuis la carte de l'accueil. */
+  page?: string;
 };
 
 export const offersIntro = {
@@ -19,6 +21,7 @@ export const offers: Offer[] = [
     from: true,
     text: "Pour être trouvé sur Google et contacté facilement.",
     points: ["Jusqu’à 5 pages, maquette incluse", "Responsive et rapide", "Référencement local de base", "Fiche Google Business"],
+    page: "/creation-site-vitrine",
   },
   {
     name: "Boutique en ligne",
@@ -27,6 +30,7 @@ export const offers: Offer[] = [
     text: "Pour vendre en ligne, avec retrait sur place ou livraison.",
     points: ["Catalogue et paiement sécurisé", "Gestion des commandes", "Click and collect", "Formation à la prise en main"],
     badge: "Le plus demandé",
+    page: "/creation-boutique-en-ligne",
   },
   {
     name: "Sur mesure",
@@ -79,6 +83,8 @@ export const maintenance = {
   text: "Hébergement, sécurité et modifications",
   priceLabel: `dès ${maintenanceFrom} €/mois`,
   toggleLabel: "Comparer les formules",
+  page: "/maintenance-site-web",
+  pageLabel: "Tout sur la maintenance",
   perMonth: "/mois",
   note: "Sans engagement, résiliable à tout moment. Jusqu’à trois mois de maintenance offerts sur les gros projets.",
 };

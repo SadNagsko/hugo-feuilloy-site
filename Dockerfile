@@ -14,7 +14,7 @@ RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progre
 
 # 3. Image finale : Apache + PHP
 FROM php:8.3-apache
-RUN a2enmod headers
+RUN a2enmod headers rewrite
 COPY docker/apache-site.conf /etc/apache2/conf-enabled/site.conf
 COPY --from=front /app/dist/ /var/www/html/
 COPY api/public/ /var/www/api/public/

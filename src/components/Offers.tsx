@@ -50,6 +50,16 @@ function OfferCard({ offer, index, mobile, cardRef }: OfferCardProps) {
           </li>
         ))}
       </ul>
+      {offer.page && (
+        <a
+          href={offer.page}
+          aria-label={`En savoir plus sur l’offre ${offer.name}`}
+          className={`mt-auto inline-flex min-h-11 items-center gap-1 self-start pt-2 text-[16px] font-medium text-violet-soft hover:text-ink ${pressable}`}
+        >
+          En savoir plus
+          <Chevron />
+        </a>
+      )}
     </motion.article>
   );
 }
@@ -80,7 +90,7 @@ function PlanPrice({ plan, align }: { plan: MaintenancePlan; align: "center" | "
   );
 }
 
-function ComparisonTable() {
+export function ComparisonTable() {
   const highlight = (plan: MaintenancePlan) => (plan.badge ? "border-x border-violet/30 bg-violet/[0.06]" : "");
 
   return (
@@ -126,7 +136,7 @@ function ComparisonTable() {
   );
 }
 
-function ComparisonCards() {
+export function ComparisonCards() {
   return (
     <ul className="flex flex-col gap-3">
       {maintenancePlans.map((plan) => (
@@ -258,23 +268,29 @@ export function Offers() {
               <p className="text-[17px] leading-[1.45]">
                 {maintenance.text} <span className="text-muted">· {maintenance.priceLabel}</span>
               </p>
-              <button
-                type="button"
-                aria-expanded={open}
-                aria-controls="formules"
-                onClick={() => setOpen((value) => !value)}
-                className={`-mx-3 inline-flex min-h-11 items-center gap-1.5 rounded-[12px] px-3 text-[16px] font-medium text-violet-soft hover:text-ink ${pressable}`}
-              >
-                {maintenance.toggleLabel}
-                <motion.span
-                  aria-hidden="true"
-                  className="inline-flex"
-                  animate={{ rotate: open ? 90 : 0 }}
-                  transition={reduceMotion ? { duration: 0 } : { type: "spring", bounce: 0, duration: 0.4 }}
+              <div className="flex flex-wrap items-center gap-x-6">
+                <button
+                  type="button"
+                  aria-expanded={open}
+                  aria-controls="formules"
+                  onClick={() => setOpen((value) => !value)}
+                  className={`-mx-3 inline-flex min-h-11 items-center gap-1.5 rounded-[12px] px-3 text-[16px] font-medium text-violet-soft hover:text-ink ${pressable}`}
                 >
+                  {maintenance.toggleLabel}
+                  <motion.span
+                    aria-hidden="true"
+                    className="inline-flex"
+                    animate={{ rotate: open ? 90 : 0 }}
+                    transition={reduceMotion ? { duration: 0 } : { type: "spring", bounce: 0, duration: 0.4 }}
+                  >
+                    <Chevron />
+                  </motion.span>
+                </button>
+                <a href={maintenance.page} className={`-mx-3 inline-flex min-h-11 items-center gap-1.5 rounded-[12px] px-3 text-[16px] font-medium text-muted hover:text-ink ${pressable}`}>
+                  {maintenance.pageLabel}
                   <Chevron />
-                </motion.span>
-              </button>
+                </a>
+              </div>
             </div>
 
             <AnimatePresence initial={false}>

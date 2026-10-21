@@ -1,4 +1,5 @@
-import { offers } from "./offers.ts";
+import { maintenancePlans, offers, type Offer } from "./offers.ts";
+import { findContentPage, type ContentPage } from "./pages.ts";
 import { about, phoneHref, routes, site } from "./site.ts";
 
 const absolute = (path: string) => `${site.url}${path}`;
@@ -83,11 +84,80 @@ export function structuredData() {
   };
 }
 
+const providerRef = () => ({ "@type": "ProfessionalService", "@id": ids.business, name: site.name, url: absolute("/") });
+const areaServed = () => site.areaServed.map((area) => ({ "@type": area.type, name: area.name }));
+
+function offerNode(offer: Offer) {
+  const price = startingPrice(offer.price);
+  return {
+    "@type": "Offer",
+    name: offer.name,
+    description: offer.text,
+    ...(price ? { priceCurrency: "EUR", priceSpecification: { "@type": "PriceSpecification", minPrice: price, priceCurrency: "EUR" } } : {}),
+  };
+}
+
+const planNodes = () =>
+  maintenancePlans.map((plan) => ({
+    "@type": "Offer",
+    name: `Formule ${plan.name}`,
+    priceCurrency: "EUR",
+    price: plan.monthlyPrice,
+    priceSpecification: { "@type": "UnitPriceSpecification", price: plan.monthlyPrice, priceCurrency: "EUR", unitText: "mois" },
+  }));
+
+function pageGraph(page: ContentPage) {
+  const url = absolute(page.path);
+  const breadcrumb = {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Accueil", item: absolute("/") },
+      { "@type": "ListItem", position: 2, name: page.breadcrumb, item: url },
+    ],
+  };
+  const nodes: object[] = [breadcrumb];
+
+  if (page.kind === "service") {
+    nodes.push({
+      "@type": "Service",
+      name: page.service.name,
+      serviceType: page.service.type,
+      description: page.description,
+      url,
+      provider: providerRef(),
+      areaServed: areaServed(),
+      offers: page.service.offers === "maintenance" ? planNodes() : page.service.offers.map(offerNode),
+    });
+  }
+  if (page.kind === "article") {
+    nodes.push({
+      "@type": "Article",
+      headline: page.h1,
+      description: page.description,
+      datePublished: page.published,
+      inLanguage: "fr-FR",
+      mainEntityOfPage: url,
+      image: absolute("/og.jpg"),
+      author: { "@type": "Person", "@id": ids.person, name: site.name, url: absolute("/") },
+      publisher: providerRef(),
+    });
+  }
+  return { "@context": "https://schema.org", "@graph": nodes };
+}
+
+const jsonLd = (data: object) => `<script type="application/ld+json">${JSON.stringify(data).replace(/</g, "\\u003c")}</script>`;
+
+/** Données structurées d'une page de contenu (services, page locale, étude de cas, article). */
+export function contentStructuredData(path: string) {
+  const page = findContentPage(path);
+  return page ? pageGraph(page) : undefined;
+}
+
 /** Balises propres à chaque page, injectées dans le <head> au pré-rendu. */
 export function routeHead(path: string) {
   const route = routes.find((item) => item.path === path);
   if (!route?.indexable) return '<meta name="robots" content="noindex, follow" />';
-  if (path !== "/") return "";
-  const json = JSON.stringify(structuredData()).replace(/</g, "\\u003c");
-  return `<script type="application/ld+json">${json}</script>`;
+  if (path === "/") return jsonLd(structuredData());
+  const content = contentStructuredData(path);
+  return content ? jsonLd(content) : "";
 }
